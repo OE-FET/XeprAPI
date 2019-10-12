@@ -1,0 +1,19 @@
+#################
+XeprAPI Scripting
+#################
+
+
+Script Keywords
+===============
+
+Certain keywords might be added to the first two lines of an XeprAPI script to be run from Xepr
+(via the menu item "Run XeprAPI Script"). In general, the actual keywords are all uppercase letters
+and they are enclosed in '#' characters (without any spaces). Valid keywords are:
+
+    * **#NOTERM#** -- do not open the script in a terminal window. No window will show up unless
+      it is explicitly created by the script (e.g. by way of the *Tkinter* module or any other GUI toolkit).
+
+    * **#NOWAIT#** -- this can be used to control whether the terminal window waits for a key to
+      be pressed when the actual script is finished. If the keyword is found, the terminal window
+      will not wait before closing. If **#NOTERM#** is also found, the **#NOWAIT#** keyword will be ignored.
+

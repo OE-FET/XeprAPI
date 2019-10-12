@@ -1,0 +1,1068 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>XeprAPI module &mdash; XeprAPI 0.59 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.59',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="XeprAPI 0.59 documentation" href="index.html" />
+    <link rel="next" title="XeprAPI Scripting" href="Scripting.html" />
+    <link rel="prev" title="XeprAPI Example Usage" href="Examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Scripting.html" title="XeprAPI Scripting"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="XeprAPI Example Usage"
+             accesskey="P">previous</a> |</li>
+    <li><a href="http://www.bruker-biospin.com/">Bruker BioSpin</a> &raquo;</li>
+    
+        <li><a href="index.html">XeprAPI 0.59 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">XeprAPI module</a><ul>
+<li><a class="reference internal" href="#xepr-class">Xepr class</a></li>
+<li><a class="reference internal" href="#dataset-class">Dataset class</a></li>
+<li><a class="reference internal" href="#experiment-class">Experiment class</a></li>
+<li><a class="reference internal" href="#parameter-class">Parameter class</a></li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Examples.html"
+                        title="previous chapter">XeprAPI Example Usage</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Scripting.html"
+                        title="next chapter">XeprAPI Scripting</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/XeprAPI.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+    <h3>External Links</h3>
+    <ul class="external-links-menu">
+        <li><a href="http://www.numpy.org" target="_blank">NumPy documentation</a></li>
+        <li><a href="http://docs.python.org/2.6" target="_blank">Python documentation</a></li>
+    </ul>
+    
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-XeprAPI">
+<span id="xeprapi-module"></span><h1>XeprAPI module<a class="headerlink" href="#module-XeprAPI" title="Permalink to this headline">¶</a></h1>
+<p><em>Xepr API</em> module for Python, providing access to <strong>Xepr</strong> via <em>libxeprapi.so</em></p>
+<dl class="function">
+<dt id="XeprAPI.getXeprInstances">
+<tt class="descclassname">XeprAPI.</tt><tt class="descname">getXeprInstances</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.getXeprInstances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects <strong>Xepr</strong> instances which are waiting for connections from XeprAPI clients. For this to work, the API has to be
+enabled in <strong>Xepr</strong> (menu &#8220;<em>Processing</em>&#8221;  -&gt;  sub-menu &#8220;<em>XeprAPI</em>&#8221;  -&gt;  menu item &#8220;<em>Enable Xepr API</em>&#8221;). Xepr instances which
+already are connected to an XeprAPI client are not listed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of Xepr process ID numbers as its keys and the visible window title of the
+Xepr instance as the corresponding values. The process ID (PID) keys can be used to connect to a specific
+<strong>Xepr</strong> instance by specifying the PID when creating an object of <a class="reference internal" href="#XeprAPI.Xepr" title="XeprAPI.Xepr"><tt class="xref py py-class docutils literal"><span class="pre">Xepr</span></tt></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="xepr-class">
+<h2>Xepr class<a class="headerlink" href="#xepr-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="XeprAPI.Xepr">
+<em class="property">class </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">Xepr</tt><big>(</big><em>constantconstants=True</em>, <em>libxeprapi=None</em>, <em>verbose=False</em>, <em>pid=None</em><big>)</big><a class="headerlink" href="#XeprAPI.Xepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the Xepr object and establishes a connection to the Xepr software. For this to work, the API has to be enabled in
+<strong>Xepr</strong> (menu &#8220;<em>Processing</em>&#8221;  -&gt;  sub-menu &#8220;<em>XeprAPI</em>&#8221;  -&gt;  menu item &#8220;<em>Enable Xepr API</em>&#8221;).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>constantconstants</strong> (<em>True or False; default = True</em>) &#8211; If <em>True</em>, ProDeL constants are only requested once upon API initialization; if <em>False</em>, the
+constants are requested from <strong>Xepr</strong> each time they are used in XeprAPI classes or in the Python script
+instantiating the class object. Typically, there is no reason to change the default behavior.</li>
+<li><strong>libxeprapi</strong> (<em>string or None; default = None</em>) &#8211; Specify path to the helper library <em>libxeprapi.so</em>. If no path is given, XeprAPI looks for the library in the directory
+where the XeprAPI Python module is located as well as in the current directory.</li>
+<li><strong>verbose</strong> (<em>True or False; default = False</em>) &#8211; If <em>True</em>, enables a few messages in the XeprAPI module.</li>
+<li><strong>pid</strong> (integer value or <em>None</em>) &#8211; Connect to a specific <strong>Xepr</strong> instance (corresponding to this process ID). If no <em>pid</em> value is specified an
+<strong>Xepr</strong> instance will be sought out upon construction.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Instance of <a class="reference internal" href="#XeprAPI.Xepr" title="XeprAPI.Xepr"><tt class="xref py py-class docutils literal"><span class="pre">Xepr</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">XeprAPI</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Xepr</span><span class="o">=</span><span class="n">XeprAPI</span><span class="o">.</span><span class="n">Xepr</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="XeprAPI.Xepr.aqGetComment">
+<tt class="descname">aqGetComment</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.aqGetComment" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Comment describing the sample.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.aqGetSplAggrState">
+<tt class="descname">aqGetSplAggrState</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.aqGetSplAggrState" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Aggregate state of the sample.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.aqGetSplFormula">
+<tt class="descname">aqGetSplFormula</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.aqGetSplFormula" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Formula describing the sample.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.aqGetSplName">
+<tt class="descname">aqGetSplName</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.aqGetSplName" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of the sample.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.aqSetComment">
+<tt class="descname">aqSetComment</tt><big>(</big><em>comment</em><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.aqSetComment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set comment describing the sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>comment</strong> &#8211; Comment as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.printLn">
+<tt class="descname">printLn</tt><big>(</big><em>p1</em><span class="optional">[</span>, <em>p2</em>, <em>p3</em>, <em>...</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.printLn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the data specified by <em>p1</em> (or the data specified by <em>p1</em>, <em>p2</em>, <em>p3</em>...) in an &#8220;attention&#8221; dialog
+box of the <strong>Xepr</strong> application. Adds a new-line character at the end of the line.</p>
+<p>Examples:</p>
+<div class="highlight-python"><pre>...suppose we already have the Xepr object...
+&gt;&gt;&gt; Xepr.printLn("Hello Xepr operator!")
+&gt;&gt;&gt; Xepr.printLn("There are ", 3600, " seconds in ", 1, " hour.")
+&gt;&gt;&gt; Xepr.printLn("%u seconds per hour, %u hours a day...that's a total of %u seconds per day" % (3600, 24, 3600*24))</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.workIndex">
+<tt class="descname">workIndex</tt><big>(</big><em>percent</em><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.workIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the progress bar of the Xepr application according to the <em>percent</em> parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>percent</strong> (<em>float value, 0.0 &lt;= percent &lt;= 100.0</em>) &#8211; Percentage of the work done.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Xepr.XeprCmds">
+<tt class="descname">XeprCmds</tt><a class="headerlink" href="#XeprAPI.Xepr.XeprCmds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of a class providing access to native Xepr commands (like those in <strong>Xepr&#8217;s</strong>
+&#8220;<em>Commands &amp; History</em>&#8221; in the &#8220;<em>Options</em>&#8221; menu)</p>
+<p>Examples:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; Xepr.XeprCmds.vpLoad("/opt/Bruker/xepr/sharedData/Examples/fid.DSC")  # load data file into Xepr application
+
+&gt;&gt;&gt; Xepr.XeprCmds.vpClear()             # clear viewport
+
+&gt;&gt;&gt; Xepr.XeprCmds.aqParOpen()           # open parameter panel for current experiment
+
+&gt;&gt;&gt; Xepr.XeprCmds.prWinHamming("Current", "Primary", "Current", 1000, 0)    # apply Hamming window to the data
+
+&gt;&gt;&gt; Xepr.XeprCmds.prFFTcplx("Current", "Primary", "All", "fwd")             # apply forward FFT (complex)</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.XeprDataset">
+<tt class="descname">XeprDataset</tt><big>(</big><em>size=None</em>, <em>autorefresh=False</em>, <em>xeprset=&quot;primary&quot;</em>, <em>iscomplex=False</em>, <em>shape=None</em><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.XeprDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> object for accessing Xepr&#8217;s datasets or creating new datasets (both 1D and 2D).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>size</strong> (<em>integer value or tuple of integer values or None; default = None</em>) &#8211; Size of dataset to be created. If <em>size</em> = <em>None</em>, no dataset is created, but it will be retrieved from the <strong>Xepr</strong> dataset
+specified by <em>xeprset</em> upon access to one of the attributes of the dataset object. If <em>size</em> is an integer number,
+a 1D dataset will be created, with <em>size</em> being the number of values on the abscissa. If <em>size</em> is a tuple of two integer
+numbers, i.e. (X,Y), a 2D dataset will be created, with X being the number of values on the first abscissa and Y
+the number of values on the second abscissa.</li>
+<li><strong>shape</strong> (<em>integer value or tuple of integer values or None; default = None</em>) &#8211; similar to <em>size</em> argument, but in reversed order for 2D datasets, where <em>shape</em> = (Y,X) will create a dataset with
+X being the number of values on the first abscissa and Y the number of values on the second abscissa. For 1D
+datasets, <em>size</em> and <em>shape</em> have the same meaning.</li>
+<li><strong>autorefresh</strong> (<em>True or False; default = False</em>) &#8211; If <em>True</em>, the GUI of the <strong>Xepr</strong> application will be refreshed each time the <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a>
+method is
+called. If <em>False</em>, the GUI is refreshed only by calling the <a class="reference internal" href="#XeprAPI.Xepr.XeprGUIrefresh" title="XeprAPI.Xepr.XeprGUIrefresh"><tt class="xref py py-meth docutils literal"><span class="pre">XeprGUIrefresh()</span></tt></a> method or if the
+<a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> method is called with the &#8216;refresh&#8217; option.</li>
+<li><strong>xeprset</strong> (<em>string, default = &#8220;primary&#8221;</em>) &#8211; Select the dataset of the <strong>Xepr</strong> application to be used for writing a dataset to
+(by calling <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a>) or for retrieving a dataset from.</li>
+<li><strong>iscomplex</strong> (<em>True or False; default = False</em>) &#8211; If <em>True</em>, a dataset would be created with a complex ordinate. Only valid if <em>size</em> != <em>None</em>,
+i.e. if a dataset is to be created.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; dset_pri = Xepr.XeprDataset()                          # retrieve Xepr's primary dataset
+&gt;&gt;&gt; dset_sec = Xepr.XeprDataset(xeprset = "secondary")     # retrieve Xepr's secondary dataset
+
+&gt;&gt;&gt; dset1D = Xepr.XeprDataset(size = 1024,                 # create 1D dataset with 1024 abscissa values
+                              xeprset = "secondary")       # associated with Xepr's secondary dataset
+
+&gt;&gt;&gt; dset2D = Xepr.XeprDataset(size = (1024, 25))           # create 2D dataset with X * Y = 1024 * 25 values
+# this produces the same type of dataset:
+&gt;&gt;&gt; dset2D = Xepr.XeprDataset(shape = (25, 1024))          # using shape argument: Y * X = 25 * 1024 values</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.XeprExperiment">
+<tt class="descname">XeprExperiment</tt><big>(</big><em>name_or_vp=-1</em>, <em>exptype=None</em>, <em>axs1=None</em>, <em>axs2=None</em>, <em>ordaxs=None</em>, <em>addgrad=False</em>, <em>addgonio=False</em>, <em>addvtu=False</em><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.XeprExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates Experiment object to create a new experiment or to access an experiment already set up by the operator of the <strong>Xepr</strong>
+application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name_or_vp</strong> (<em>string or integer number; default = -1</em>) &#8211; If <em>name_or_vp</em> is an integer value, the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> object accesses the experiment corresponding
+to the <strong>Xepr</strong> viewport specified by <em>name_or_vp</em>; by default, the viewport number is <em>-1</em>, i.e. the
+current viewport. If <em>name_or_vp</em> is a string, it is used as the name of the experiment in <strong>Xepr</strong> to be
+created or accessed. If none of the remaining parameters is explicitly set, the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> object
+accesses the <strong>Xepr</strong> experiment by the name given for <em>name_or_vp</em>. If in addition to the string in
+<em>name_or_vp</em> any parameter is given, <strong>Xepr</strong> will try to build the experiment described by the parameters.</li>
+<li><strong>exptype</strong> (<em>string or None; default = None</em>) &#8211; type of the experiment to be built, e.g. &#8220;C.W.&#8221; or &#8220;Pulse&#8221;.</li>
+<li><strong>axs1</strong> (<em>string or None; default = None</em>) &#8211; Type of the first abscissa, e.g. &#8220;Field&#8221;; required for building a 1D or 2D experiment.</li>
+<li><strong>axs2</strong> (<em>string or None; default = None</em>) &#8211; Type of the first abscissa, e.g. &#8220;Field&#8221;; required for building a 2D experiment.</li>
+<li><strong>ordaxs</strong> (<em>string or None: default = None</em>) &#8211; Type of the ordinate, e.g. &#8220;Signal channel&#8221; or &#8220;Transient recorder&#8221;; required for building 1D or 2D experiments.</li>
+<li><strong>addgrad</strong> &#8211; If <em>True</em>, add gradient unit to the experiment to be built.</li>
+<li><strong>addgonio</strong> &#8211; If <em>True</em>, add goniometer unit to the experiment to be built.</li>
+<li><strong>addvtu</strong> &#8211; If <em>True</em>, add temperature controller to the experiment to be built.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; cur_exp = Xepr.XeprExperiment()     # access current experiment in Xepr
+
+&gt;&gt;&gt; cw_exp = Xepr.XeprExperiment("CWExp", exptype="C.W.", axs1="Field",   # create CW experiment
+                                 ordaxs="Signal channel", addgrad=True)   # and add a gradient unit
+
+&gt;&gt;&gt; pulse_exp = Xepr.XeprExperiment("PulseExp", exptype="Pulse",                # create a pulse
+                                   axs1="Field", ordaxs="Transient recorder")   # experiment</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.XeprActive">
+<tt class="descname">XeprActive</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.XeprActive" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> if the <em>Xepr API</em> is active.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.XeprClose">
+<tt class="descname">XeprClose</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.XeprClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the API and tells <strong>Xepr</strong> to shut down its API support as well. After that, the API support of <strong>Xepr</strong>
+has to be re-enabled manually by the <strong>Xepr</strong> operator (menu &#8220;<em>Processing</em>&#8221;  -&gt;  sub-menu &#8220;<em>XeprAPI</em>&#8221;
+-&gt;  menu item &#8220;<em>Enable Xepr API</em>&#8221;) to be able to establish the <em>Xepr API</em> again.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">IOError exception in case shutting down the <em>Xepr API</em> did not succeed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.XeprGUIrefresh">
+<tt class="descname">XeprGUIrefresh</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.XeprGUIrefresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refreshes the <strong>Xepr</strong> GUI.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Xepr.XeprOpen">
+<tt class="descname">XeprOpen</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Xepr.XeprOpen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens the Xepr API for Python. Can be used to re-open the API after having closed it using <a class="reference internal" href="#XeprAPI.Xepr.XeprClose" title="XeprAPI.Xepr.XeprClose"><tt class="xref py py-meth docutils literal"><span class="pre">XeprClose()</span></tt></a>. Usually, you
+will not need to open the API manually, since it will be opened automatically upon instantiation of the <a class="reference internal" href="#XeprAPI.Xepr" title="XeprAPI.Xepr"><tt class="xref py py-class docutils literal"><span class="pre">Xepr</span></tt></a> class, i.e.
+by creating an instance of <a class="reference internal" href="#XeprAPI.Xepr" title="XeprAPI.Xepr"><tt class="xref py py-class docutils literal"><span class="pre">XeprAPI.Xepr()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">IOError exception in case opening the <em>Xepr API</em> did not succeed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dataset-class">
+<h2>Dataset class<a class="headerlink" href="#dataset-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="XeprAPI.Dataset">
+<em class="property">class </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">Dataset</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="XeprAPI.Dataset.X">
+<tt class="descname">X</tt><a class="headerlink" href="#XeprAPI.Dataset.X" title="Permalink to this definition">¶</a></dt>
+<dd><p>1D (<em>Numpy</em>) array corresponding to the X abscissa values of the dataset</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Dataset.Y">
+<tt class="descname">Y</tt><a class="headerlink" href="#XeprAPI.Dataset.Y" title="Permalink to this definition">¶</a></dt>
+<dd><p>1D (<em>Numpy</em>) array corresponding to the Y abscissa values of the dataset (available for 2D datasets only)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Dataset.O">
+<tt class="descname">O</tt><a class="headerlink" href="#XeprAPI.Dataset.O" title="Permalink to this definition">¶</a></dt>
+<dd><p>1D or 2D (<em>Numpy</em>) array corresponding to the ordinate values of the dataset</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># ...suppose we already have the Xepr object...</span>
+<span class="n">dset</span> <span class="o">=</span> <span class="n">Xepr</span><span class="o">.</span><span class="n">XeprDataset</span><span class="p">()</span>       <span class="c"># retrieve dataset from Xepr</span>
+<span class="n">xabscissa</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">X</span>              <span class="c"># get X abscissa values</span>
+<span class="n">ordinate</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">O</span>               <span class="c"># get ordinate data</span>
+<span class="n">dset</span><span class="o">.</span><span class="n">O</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">O</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">ordinate</span><span class="p">)</span> <span class="c"># normalize ordinate values</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Dataset.isComplex">
+<tt class="descname">isComplex</tt><a class="headerlink" href="#XeprAPI.Dataset.isComplex" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance contains complex ordinate data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Dataset.shape">
+<tt class="descname">shape</tt><a class="headerlink" href="#XeprAPI.Dataset.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape of the dataset, i.e. tuple of one or two integer values corresponding to the number of values
+of the (second and) first abscissa.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Dataset.size">
+<tt class="descname">size</tt><a class="headerlink" href="#XeprAPI.Dataset.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple equivalent to <em>shape</em> attribute, but in reversed order. That is, the first integer value corresponds to the
+number of values on the first abscissa, the second value corresponds to the number of values on the second abscissa (if any).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.getTitle">
+<tt class="descname">getTitle</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.getTitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get title of the dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Title of the dataset as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.setTitle">
+<tt class="descname">setTitle</tt><big>(</big><em>title</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.setTitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set title of the dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>title</strong> (<em>string</em>) &#8211; New title of the dataset.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.getSPLReal">
+<tt class="descname">getSPLReal</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.getSPLReal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get value for the SPL keyword.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; SPL keyword specifying the quantity of the dataset.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Value of the quantity addressed by <em>key</em>.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose 'dset' is a Dataset object retrieved from Xepr...
+&gt;&gt;&gt;  MWpower = dset.getSPLReal("MWPW")        # microwave power used for the dataset</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.datasetAvailable">
+<tt class="descname">datasetAvailable</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.datasetAvailable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether dataset is available</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> if the dataset has been created by the user or if the dataset is available in <strong>Xepr</strong>.
+In the latter case, the dataset in <strong>Xepr</strong> is copied to the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> object. If <em>False</em> is returned
+a subsequent access to attributes of the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> object would raise an exception.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.fromXepr">
+<tt class="descname">fromXepr</tt><big>(</big><em>xeprset=None</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.fromXepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the dataset in the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance with data from <strong>Xepr</strong>. Calls <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> with
+the <em>reverse</em> parameter set accordingly. See <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> for a description of the remaining parameter(s).</p>
+<p>Examples:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; exp = Xepr.XeprExperiment()                         # get object to control current experiment in Xepr
+&gt;&gt;&gt; exp.aqExpRunAndWait()                               # run the experiment once
+&gt;&gt;&gt; dset = Xepr.XeprDataset()                           # retrieve Xepr's primary dataset
+&gt;&gt;&gt; print max(dset.O)                                   # print maximum ordinate value
+&gt;&gt;&gt; exp.aqExpRunAndWait()                               # run the experiment again
+&gt;&gt;&gt; dset.fromXepr()                                     # update the Dataset instance with the new data
+&gt;&gt;&gt; print max(dset.O)                                   # print maximum ordinate value for this run</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.setXeprSet">
+<tt class="descname">setXeprSet</tt><big>(</big><em>xeprset</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.setXeprSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the dataset of the <strong>Xepr</strong> application the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance is currently associated with.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xeprset</strong> (<em>string</em>) &#8211; Name of the dataset of the <strong>Xepr</strong> application (e.g. &#8220;primary&#8221; or &#8220;secondary&#8221; etc.) the
+<a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance is to be associated with.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.toXepr">
+<tt class="descname">toXepr</tt><big>(</big><em>refresh=False</em>, <em>xeprset=None</em>, <em>store=False</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.toXepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the dataset in <strong>Xepr</strong> with the data in the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance. Calls <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> with
+the <em>reverse</em> parameter set accordingly. See <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> for a description of the remaining parameters.</p>
+<p>Examples:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; dset_sec = Xepr.XeprDataset(xeprset = "secondary")  # retrieve Xepr's secondary dataset
+&gt;&gt;&gt; dset_sec.O -= dset_sec.O.sum() / len(dset_sec.O)    # subtract DC signal
+&gt;&gt;&gt; dset_sec.toXepr(refresh=True)                       # update the secondary dataset in the Xepr application
+                                                        # and refresh the GUI</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Dataset.update">
+<tt class="descname">update</tt><big>(</big><em>reverse=False</em>, <em>refresh=False</em>, <em>xeprset=None</em>, <em>store=False</em><big>)</big><a class="headerlink" href="#XeprAPI.Dataset.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the dataset in <strong>Xepr</strong> with the data in the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance (if the dataset
+has been created upon instantiation using the <em>size</em> parameter) or update the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> instance with data originating
+from the corresponding dataset in <strong>Xepr</strong> (if the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> has been instantiated without the <em>size</em> parameter).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>reverse</strong> (<em>True or False; default = False</em>) &#8211; If <em>False</em>, the update takes place as described above. If <em>True</em>, the direction of the update is reversed.</li>
+<li><strong>refresh</strong> (<em>True or False; default = False</em>) &#8211; If <em>True</em>, the GUI of the <strong>Xepr</strong> application is refreshed after updating the dataset.
+Useful if the dataset in the <strong>Xepr</strong> application is to be updated from the data in the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a>,
+since only after refreshing the <strong>Xepr</strong> GUI the changes will be displayed.</li>
+<li><strong>xeprset</strong> (<em>string or None; default=None</em>) &#8211; If not <em>None</em>, the dataset of the <strong>Xepr</strong> application the <a class="reference internal" href="#XeprAPI.Dataset" title="XeprAPI.Dataset"><tt class="xref py py-class docutils literal"><span class="pre">Dataset</span></tt></a> has been associated with upon
+instantiation will be changed prior to updating. Same as calling the <a class="reference internal" href="#XeprAPI.Dataset.setXeprSet" title="XeprAPI.Dataset.setXeprSet"><tt class="xref py py-meth docutils literal"><span class="pre">setXeprSet()</span></tt></a> method
+before calling <a class="reference internal" href="#XeprAPI.Dataset.update" title="XeprAPI.Dataset.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a></li>
+<li><strong>store</strong> (<em>True or False; default = False</em>) &#8211; If <em>True</em>, the dataset content will be stored in <strong>xepr</strong> memory and can be accessed from the drop-down
+menu of the viewport. The title of the dataset will be used as the designator of the menu entry.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; dset_sec = Xepr.XeprDataset(xeprset = "secondary")  # retrieve Xepr's secondary dataset
+&gt;&gt;&gt; dset_sec.O -= dset_sec.O.sum() / len(dset_sec.O)    # subtract DC signal
+&gt;&gt;&gt; dset_sec.update(reverse=True,                       # update the secondary dataset in the Xepr application
+                    refresh=True)                       # and refresh the GUI
+
+&gt;&gt;&gt; exp = Xepr.XeprExperiment()                         # get object to control current experiment in Xepr
+&gt;&gt;&gt; exp.aqExpRunAndWait()                               # run the experiment once
+&gt;&gt;&gt; dset = Xepr.XeprDataset()                           # retrieve Xepr's primary dataset
+&gt;&gt;&gt; print max(dset.O)                                   # print maximum ordinate value
+&gt;&gt;&gt; exp.aqExpRunAndWait()                               # run the experiment again
+&gt;&gt;&gt; dset.update()                                       # update the Dataset instance with the new data
+&gt;&gt;&gt; print max(dset.O)                                   # print maximum ordinate value for this run</pre>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="experiment-class">
+<h2>Experiment class<a class="headerlink" href="#experiment-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="XeprAPI.Experiment">
+<em class="property">class </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">Experiment</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#XeprAPI.Experiment" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="XeprAPI.Experiment.isActive">
+<tt class="descname">isActive</tt><a class="headerlink" href="#XeprAPI.Experiment.isActive" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance is active.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Experiment.isEdit">
+<tt class="descname">isEdit</tt><a class="headerlink" href="#XeprAPI.Experiment.isEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance is in edit state.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Experiment.isPaused">
+<tt class="descname">isPaused</tt><a class="headerlink" href="#XeprAPI.Experiment.isPaused" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance is in pause state.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Experiment.isClosed">
+<tt class="descname">isClosed</tt><a class="headerlink" href="#XeprAPI.Experiment.isClosed" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance is closed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Experiment.isInstalled">
+<tt class="descname">isInstalled</tt><a class="headerlink" href="#XeprAPI.Experiment.isInstalled" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance is installed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="XeprAPI.Experiment.isRunning">
+<tt class="descname">isRunning</tt><a class="headerlink" href="#XeprAPI.Experiment.isRunning" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>True</em> if the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance is running.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpAbort">
+<tt class="descname">aqExpAbort</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpAbort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aborts the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpActivate">
+<tt class="descname">aqExpActivate</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpActivate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activates the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpEdit">
+<tt class="descname">aqExpEdit</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance into edit state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpInstall">
+<tt class="descname">aqExpInstall</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpInstall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Installs the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpPause">
+<tt class="descname">aqExpPause</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpPause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance into pause state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpRun">
+<tt class="descname">aqExpRun</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpRunAndWait">
+<tt class="descname">aqExpRunAndWait</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpRunAndWait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance and wait for it to finish.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqExpStop">
+<tt class="descname">aqExpStop</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqExpStop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqMbcFineTune">
+<tt class="descname">aqMbcFineTune</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqMbcFineTune" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fine-tune the microwave bridge.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqMbcOperate">
+<tt class="descname">aqMbcOperate</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqMbcOperate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put microwave bridge into <em>operate</em> mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqMbcStandby">
+<tt class="descname">aqMbcStandby</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqMbcStandby" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put microwave bridge into <em>standby</em> mode.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">operator [&lt;operand string&gt;]</tt></dt>
+<dd><p>Accesses the experiment parameter specified by <em>&lt;operand string&gt;</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Instance of <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> for the experiment parameter specified by <em>&lt;operand string&gt;</em>. The <em>&lt;operand string&gt;</em> is
+case-insensitive.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose we already have the Xepr object...
+&gt;&gt;&gt; config = Xepr.XeprExperiment("AcqHidden")       # access Xepr's hidden experiment
+&gt;&gt;&gt; print config["*sysConf.Er032tMaxField"].value   # get maximum field strength value of field controller
+6000.0
+&gt;&gt;&gt; minBpar = config["*sysConf.Er032tMinField"]     # get instance representing the minimum field
+&gt;&gt;&gt; print "%s = %.1f %s" % (minBpar.aqGetParLabel(),  # access several methods/attributes of the minBpar object
+            minBpar.value, minBpar.aqGetParUnits())
+Minimum Field = 30.0 G
+&gt;&gt;&gt; minBpar.value -= 10.0                           # reduce lower limit for the field controller</pre>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">operator in</tt></dt>
+<dd><p>Reports whether the experiment contains a specific parameter or functional unit. The name of the parameter/functional unit is case-insensitive.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose we already have an Experiment object...
+&gt;&gt;&gt; if not "cwbridge.PowerAtten" in exp:                # check for parameter
+&gt;&gt;&gt;     print "No such parameter 'cwbridge.PowerAtten'"
+
+&gt;&gt;&gt; if "transrec.*" in exp:                             # do we use the transRec FU?
+&gt;&gt;&gt;     print "experiment uses the functional unit transRec"
+
+&gt;&gt;&gt; if "*.AcqMode" in exp:                              # 'AcqMode' parameter provided by any unit?
+&gt;&gt;&gt;     print exp["*.AcqMode"].value</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.aqGetExpName">
+<tt class="descname">aqGetExpName</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.aqGetExpName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the name of the experiment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.findParam">
+<tt class="descname">findParam</tt><big>(</big><em>param</em>, <em>findall=False</em><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.findParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the fully qualified parameter name for the name given by <em>param</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>param</strong> (<em>string, case-insensitive</em>) &#8211; Name of the parameter to look for.</li>
+<li><strong>findall</strong> (<em>True</em> or <em>False</em>, default = <em>False</em>) &#8211; If <em>True</em>, all matching parameters will be returned as a list; if <em>False</em>, only the first matching
+parameter will be returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of matching parameters if <em>findall=True</em>, parameter string otherwise.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.getFuList">
+<tt class="descname">getFuList</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.getFuList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of functional units for the experiment.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose we already have an Experiment object...
+&gt;&gt;&gt; print hidden.getFuList()    # print functional units of hidden experiment
+['specJet', 'freqCounter', 'sysConf', 'gTempCtrl', 'cwBridge', 'sctCalib', 'ffLock', 'ftBridge']</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.getFuParList">
+<tt class="descname">getFuParList</tt><big>(</big><em>funame</em><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.getFuParList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of paramater names for the functional unit <em>funame</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>funame</strong> (<em>string</em>) &#8211; Specifies the name of the functional unit to list the parameter names for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of the parameter names of the functional unit; empty list if the functional unit could not be found.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose we already have an Experiment object...
+&gt;&gt;&gt; print exp.getFuParList("cwbridge")      # print list of parameter for cwbridge unit
+['AcqFineTuning', 'Power', 'PowerAt0dBMon', 'PowerAtten', 'PowerAttenMon']</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Experiment.getParam">
+<tt class="descname">getParam</tt><big>(</big><em>name</em>, <em>enum=None</em><big>)</big><a class="headerlink" href="#XeprAPI.Experiment.getParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent to using the operator <em>[]</em>, except for the additional <em>enum</em> parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>string, case-insensitive</em>) &#8211; Specifies the parameter of the experiment represented by the <a class="reference internal" href="#XeprAPI.Experiment" title="XeprAPI.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> instance to be accessed.</li>
+<li><strong>enum</strong> (<em>str or int or None; default = None</em>) &#8211; Specifies the type to return for the <em>value</em> attribute in case the parameter addressed is an enumerating
+type (represented in <strong>Xepr</strong> e.g. by a pull-down list). if <em>enum</em> == <em>str</em> the string corresponding to
+the ordinal number is returned, if <em>enum</em> == <em>int</em>, the ordinal number is returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Instance of <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> for the experiment parameter specified by <em>&lt;operand string&gt;</em>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="parameter-class">
+<h2>Parameter class<a class="headerlink" href="#parameter-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="XeprAPI.Parameter">
+<em class="property">class </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">Parameter</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#XeprAPI.Parameter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="XeprAPI.Parameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#XeprAPI.Parameter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/set the value of the experiment parameter. Only valid if the parameter represented by
+the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance is a scalar value.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose we already have an Experiment object...
+&gt;&gt;&gt; exp["CenterField"].value = 4000.0         # set center field
+&gt;&gt;&gt; print exp["FieldPosition"].value          # read field position</pre>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">operator [&lt;index list&gt;]</tt></dt>
+<dd><p>Accesses the experiment parameter value specified by <em>&lt;index list&gt;</em>. Only valid if the parameter is multi-dimensional.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre># ...suppose we already have an Experiment object...
+&gt;&gt;&gt; pattEdit = exp["*ftEpr.PatternEdit"]        # object for pulse table access
+&gt;&gt;&gt; pattEdit[0, 0] = 20.0                       # set pulse position of first pulse (1st row, 1st column)
+&gt;&gt;&gt; pattEdit[0, 1] = 10.0                       # set pulse duration of first pulse (2nd row, 1st column)</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParCoarseSteps">
+<tt class="descname">aqGetParCoarseSteps</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParCoarseSteps" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Coarse step size of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">aqGetParDimSize(dim):</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Number of parameter values along the specified dimension <em>dim</em> of the parameter represented by
+the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParFineSteps">
+<tt class="descname">aqGetParFineSteps</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParFineSteps" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Fine step size of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParLabel">
+<tt class="descname">aqGetParLabel</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParLabel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Label string of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParMaxValue">
+<tt class="descname">aqGetParMaxValue</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParMaxValue" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Maximum value of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParMinValue">
+<tt class="descname">aqGetParMinValue</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParMinValue" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Minimum value of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParNbDim">
+<tt class="descname">aqGetParNbDim</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParNbDim" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Number of dimensions of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqGetParUnits">
+<tt class="descname">aqGetParUnits</tt><big>(</big><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqGetParUnits" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Unit of the parameter represented by the <a class="reference internal" href="#XeprAPI.Parameter" title="XeprAPI.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> instance as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XeprAPI.Parameter.aqStepParValue">
+<tt class="descname">aqStepParValue</tt><big>(</big><em>steps=1</em>, <em>finesteps=False</em><big>)</big><a class="headerlink" href="#XeprAPI.Parameter.aqStepParValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increase/decrease the experiment parameter according to the <em>step</em> parameter. If <em>finesteps</em> equals <em>False</em> (default),
+coarse stepping is applied.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="XeprAPI.DatasetError">
+<em class="property">exception </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">DatasetError</tt><a class="headerlink" href="#XeprAPI.DatasetError" title="Permalink to this definition">¶</a></dt>
+<dd><p>raised when a dataset cannot be retrieved or accessed</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="XeprAPI.DimensionError">
+<em class="property">exception </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">DimensionError</tt><a class="headerlink" href="#XeprAPI.DimensionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>raised when a dataset does not match the number of dimensions of target/source data to be retrieved/written</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="XeprAPI.ExperimentError">
+<em class="property">exception </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">ExperimentError</tt><a class="headerlink" href="#XeprAPI.ExperimentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>raised when an experiment cannot be created, retrieved or accessed</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="XeprAPI.ParameterError">
+<em class="property">exception </em><tt class="descclassname">XeprAPI.</tt><tt class="descname">ParameterError</tt><a class="headerlink" href="#XeprAPI.ParameterError" title="Permalink to this definition">¶</a></dt>
+<dd><p>raised when a parameter is not available in an experiment or the type of parameter (scalar/multi-dimensional) does not match the
+type being written to/read from the parameter.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Scripting.html" title="XeprAPI Scripting"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="XeprAPI Example Usage"
+             >previous</a> |</li>
+    <li><a href="http://www.bruker-biospin.com/">Bruker BioSpin</a> &raquo;</li>
+    
+        <li><a href="index.html">XeprAPI 0.59 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bruker BioSpin.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

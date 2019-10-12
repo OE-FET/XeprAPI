@@ -1,0 +1,351 @@
+##############
+XeprAPI module
+##############
+
+.. moduleauthor:: Bruker BioSpin
+
+.. currentmodule:: XeprAPI
+
+.. automodule:: XeprAPI
+
+.. autofunction:: XeprAPI.getXeprInstances
+
+
+
+Xepr class
+##########
+
+.. autoclass:: XeprAPI.Xepr
+   :members: 
+   :private-members:
+   :exclude-members: XeprDataset, XeprExperiment
+
+   .. method:: aqGetComment()
+
+        :returns: Comment describing the sample.
+
+   .. method:: aqGetSplAggrState()
+
+        :returns: Aggregate state of the sample.
+
+   .. method:: aqGetSplFormula()
+
+        :returns: Formula describing the sample.
+
+   .. method:: aqGetSplName()
+
+        :returns: Name of the sample.
+
+   .. method:: aqSetComment(comment)
+
+        Set comment describing the sample.
+
+        :param comment:     Comment as a string.
+
+   .. method:: printLn(p1 [,p2,p3,...])
+
+        Prints the data specified by *p1* (or the data specified by *p1*, *p2*, *p3*...) in an "attention" dialog
+        box of the **Xepr** application. Adds a new-line character at the end of the line.
+
+        Examples::
+
+            ...suppose we already have the Xepr object...
+            >>> Xepr.printLn("Hello Xepr operator!")
+            >>> Xepr.printLn("There are ", 3600, " seconds in ", 1, " hour.")
+            >>> Xepr.printLn("%u seconds per hour, %u hours a day...that's a total of %u seconds per day" % (3600, 24, 3600*24))
+
+   .. method:: workIndex(percent)
+
+        Sets the progress bar of the Xepr application according to the *percent* parameter.
+
+        :param percent:     Percentage of the work done.
+        :type percent:      float value, 0.0 <= percent <= 100.0
+
+   .. attribute:: XeprCmds
+
+        Instance of a class providing access to native Xepr commands (like those in **Xepr's**
+        "*Commands & History*" in the "*Options*" menu)
+
+        Examples::
+
+            # ...suppose we already have the Xepr object...
+            >>> Xepr.XeprCmds.vpLoad("/opt/Bruker/xepr/sharedData/Examples/fid.DSC")  # load data file into Xepr application
+
+            >>> Xepr.XeprCmds.vpClear()             # clear viewport
+
+            >>> Xepr.XeprCmds.aqParOpen()           # open parameter panel for current experiment
+
+            >>> Xepr.XeprCmds.prWinHamming("Current", "Primary", "Current", 1000, 0)    # apply Hamming window to the data
+
+            >>> Xepr.XeprCmds.prFFTcplx("Current", "Primary", "All", "fwd")             # apply forward FFT (complex)
+
+   .. automethod:: XeprDataset(size=None, autorefresh=False, xeprset="primary", iscomplex=False, shape=None)
+   .. automethod:: XeprExperiment(name_or_vp=-1, exptype=None, axs1=None, axs2=None, ordaxs=None, addgrad=False, addgonio=False, addvtu=False)
+
+
+Dataset class
+#############
+
+.. autoclass:: XeprAPI.Dataset(object)
+   :members:
+
+   .. attribute:: X
+
+        1D (*Numpy*) array corresponding to the X abscissa values of the dataset
+
+   .. attribute:: Y
+
+        1D (*Numpy*) array corresponding to the Y abscissa values of the dataset (available for 2D datasets only)
+   
+   .. attribute:: O
+
+        1D or 2D (*Numpy*) array corresponding to the ordinate values of the dataset
+
+        Example::
+
+            # ...suppose we already have the Xepr object...
+            dset = Xepr.XeprDataset()       # retrieve dataset from Xepr
+            xabscissa = dset.X              # get X abscissa values
+            ordinate = dset.O               # get ordinate data
+            dset.O = dset.O / max(ordinate) # normalize ordinate values
+
+   .. attribute:: isComplex
+
+        *True* if :class:`~Dataset` instance contains complex ordinate data.
+
+
+   .. attribute:: shape
+
+        Shape of the dataset, i.e. tuple of one or two integer values corresponding to the number of values
+        of the (second and) first abscissa.
+
+   .. attribute:: size
+
+        Tuple equivalent to *shape* attribute, but in reversed order. That is, the first integer value corresponds to the
+        number of values on the first abscissa, the second value corresponds to the number of values on the second abscissa (if any).
+
+   .. method:: getTitle()
+
+        Get title of the dataset.
+
+        :returns:   Title of the dataset as a string.
+
+   .. method:: setTitle(title)
+
+        Set title of the dataset.
+
+        :param title:       New title of the dataset.
+        :type title:        string
+
+   .. method:: getSPLReal(key)
+
+        Get value for the SPL keyword.
+
+        :param key:       SPL keyword specifying the quantity of the dataset.
+        :type key:        string
+
+        :returns:         Value of the quantity addressed by *key*.
+
+        Example::
+
+            # ...suppose 'dset' is a Dataset object retrieved from Xepr...
+            >>>  MWpower = dset.getSPLReal("MWPW")        # microwave power used for the dataset
+
+
+
+Experiment class
+################
+
+.. autoclass:: XeprAPI.Experiment(object)
+   :members:
+
+   .. attribute:: isActive
+
+        *True* if the experiment represented by the :class:`~XeprAPI.Experiment` instance is active.
+
+   .. attribute:: isEdit
+
+        *True* if the experiment represented by the :class:`~XeprAPI.Experiment` instance is in edit state.
+
+   .. attribute:: isPaused
+
+        *True* if the experiment represented by the :class:`~XeprAPI.Experiment` instance is in pause state.
+
+   .. attribute:: isClosed
+
+        *True* if the experiment represented by the :class:`~XeprAPI.Experiment` instance is closed.
+
+   .. attribute:: isInstalled
+
+        *True* if the experiment represented by the :class:`~XeprAPI.Experiment` instance is installed.
+
+   .. attribute:: isRunning
+
+        *True* if the experiment represented by the :class:`~XeprAPI.Experiment` instance is running.
+
+   .. method:: aqExpAbort()
+
+        Aborts the experiment represented by the :class:`~XeprAPI.Experiment` instance.
+
+   .. method:: aqExpActivate()
+
+        Activates the experiment represented by the :class:`~XeprAPI.Experiment` instance.
+
+   .. method:: aqExpEdit()
+
+        Puts the experiment represented by the :class:`~XeprAPI.Experiment` instance into edit state.
+
+   .. method:: aqExpInstall()
+
+        Installs the experiment represented by the :class:`~XeprAPI.Experiment` instance.
+
+   .. method:: aqExpPause()
+
+        Puts the experiment represented by the :class:`~XeprAPI.Experiment` instance into pause state.
+
+   .. method:: aqExpRun()
+
+        Run the experiment represented by the :class:`~XeprAPI.Experiment` instance.
+
+   .. method:: aqExpRunAndWait()
+
+        Run the experiment represented by the :class:`~XeprAPI.Experiment` instance and wait for it to finish.
+
+   .. method:: aqExpStop()
+
+        Stop the experiment represented by the :class:`~XeprAPI.Experiment` instance.
+
+   .. method:: aqMbcFineTune()
+
+        Fine-tune the microwave bridge.
+
+   .. method:: aqMbcOperate()
+
+        Put microwave bridge into *operate* mode.
+
+   .. method:: aqMbcStandby()
+
+        Put microwave bridge into *standby* mode.
+
+   .. function:: operator [<operand string>]
+
+        Accesses the experiment parameter specified by *<operand string>*.
+
+        :returns:       Instance of :class:`~XeprAPI.Parameter` for the experiment parameter specified by *<operand string>*. The *<operand string>* is
+                        case-insensitive.
+
+
+        Example::
+
+            # ...suppose we already have the Xepr object...
+            >>> config = Xepr.XeprExperiment("AcqHidden")       # access Xepr's hidden experiment
+            >>> print config["*sysConf.Er032tMaxField"].value   # get maximum field strength value of field controller
+            6000.0
+            >>> minBpar = config["*sysConf.Er032tMinField"]     # get instance representing the minimum field
+            >>> print "%s = %.1f %s" % (minBpar.aqGetParLabel(),  # access several methods/attributes of the minBpar object
+                        minBpar.value, minBpar.aqGetParUnits())
+            Minimum Field = 30.0 G
+            >>> minBpar.value -= 10.0                           # reduce lower limit for the field controller
+
+   .. function:: operator in
+
+        Reports whether the experiment contains a specific parameter or functional unit. The name of the parameter/functional unit is case-insensitive.
+
+        Example::
+
+            # ...suppose we already have an Experiment object...
+            >>> if not "cwbridge.PowerAtten" in exp:                # check for parameter
+            >>>     print "No such parameter 'cwbridge.PowerAtten'"
+
+            >>> if "transrec.*" in exp:                             # do we use the transRec FU?
+            >>>     print "experiment uses the functional unit transRec"
+
+            >>> if "*.AcqMode" in exp:                              # 'AcqMode' parameter provided by any unit?
+            >>>     print exp["*.AcqMode"].value
+
+
+Parameter class
+###############
+
+.. autoclass:: XeprAPI.Parameter(object)
+   :members:
+
+   .. attribute:: value
+
+        Get/set the value of the experiment parameter. Only valid if the parameter represented by
+        the :class:`~XeprAPI.Parameter` instance is a scalar value.
+
+        Example::
+
+            # ...suppose we already have an Experiment object...
+            >>> exp["CenterField"].value = 4000.0         # set center field
+            >>> print exp["FieldPosition"].value          # read field position
+
+   .. function:: operator [<index list>]
+
+        Accesses the experiment parameter value specified by *<index list>*. Only valid if the parameter is multi-dimensional.
+
+        Example::
+
+            # ...suppose we already have an Experiment object...
+            >>> pattEdit = exp["*ftEpr.PatternEdit"]        # object for pulse table access
+            >>> pattEdit[0, 0] = 20.0                       # set pulse position of first pulse (1st row, 1st column)
+            >>> pattEdit[0, 1] = 10.0                       # set pulse duration of first pulse (2nd row, 1st column)
+
+
+   .. method:: aqGetParCoarseSteps()
+
+        :returns:   Coarse step size of the parameter represented by the :class:`~XeprAPI.Parameter` instance.
+
+   .. method:: aqGetParDimSize(dim):
+
+        :returns:   Number of parameter values along the specified dimension *dim* of the parameter represented by
+                    the :class:`~XeprAPI.Parameter` instance.
+
+   .. method:: aqGetParFineSteps()
+
+        :returns:   Fine step size of the parameter represented by the :class:`~XeprAPI.Parameter` instance.
+
+   .. method:: aqGetParLabel()
+
+        :returns:   Label string of the parameter represented by the :class:`~XeprAPI.Parameter` instance.
+
+   .. method:: aqGetParMaxValue()
+
+        :returns:   Maximum value of the parameter represented by the :class:`~XeprAPI.Parameter` instance.
+
+   .. method:: aqGetParMinValue()
+
+        :returns:   Minimum value of the parameter represented by the :class:`~XeprAPI.Parameter` instance.
+
+   .. method:: aqGetParNbDim()
+
+        :returns:   Number of dimensions of the parameter represented by the :class:`~XeprAPI.Parameter` instance
+
+   .. method:: aqGetParUnits()
+
+        :returns:   Unit of the parameter represented by the :class:`~XeprAPI.Parameter` instance as a string.
+
+   .. method:: aqStepParValue(steps=1, finesteps=False)
+
+        Increase/decrease the experiment parameter according to the *step* parameter. If *finesteps* equals *False* (default),
+        coarse stepping is applied.
+
+
+Exceptions
+##########
+
+.. autoexception:: DatasetError
+   :inherited-members:
+.. autoexception:: DimensionError
+   :inherited-members:
+.. autoexception:: ExperimentError
+   :inherited-members:
+.. autoexception:: ParameterError
+   :inherited-members:
+
+
+
+		   
+
+

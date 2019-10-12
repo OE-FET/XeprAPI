@@ -1,0 +1,185 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Requirements &amp; Installation &mdash; XeprAPI 0.59 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.59',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="XeprAPI 0.59 documentation" href="index.html" />
+    <link rel="next" title="XeprAPI Example Usage" href="Examples.html" />
+    <link rel="prev" title="About XeprAPI for Python" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="XeprAPI Example Usage"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="About XeprAPI for Python"
+             accesskey="P">previous</a> |</li>
+    <li><a href="http://www.bruker-biospin.com/">Bruker BioSpin</a> &raquo;</li>
+    
+        <li><a href="index.html">XeprAPI 0.59 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Requirements &amp; Installation</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">About XeprAPI for Python</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Examples.html"
+                        title="next chapter">XeprAPI Example Usage</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Installation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+    <h3>External Links</h3>
+    <ul class="external-links-menu">
+        <li><a href="http://www.numpy.org" target="_blank">NumPy documentation</a></li>
+        <li><a href="http://docs.python.org/2.6" target="_blank">Python documentation</a></li>
+    </ul>
+    
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="requirements-installation">
+<h1>Requirements &amp; Installation<a class="headerlink" href="#requirements-installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>recent version of <strong>Xepr</strong> (running on Linux x86-64 or x86-32) with <em>Xepr API</em> support</li>
+<li>API helper library (<em>libxeprapi.so</em>); part of the <strong>Xepr</strong> distribution</li>
+<li>the API interface for Python (<em>XeprAPI.py</em>); part of the <strong>Xepr</strong> distribution</li>
+<li>Python V2.5.x, V2.6.x or V2.7.x</li>
+<li>Python module <em>Numpy</em> &gt;= V1.2.1</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>Both the API helper library, <em>libxeprapi.so</em>, and the API interface for Python,
+<em>XeprAPI.py</em>, are included with the <em>Xepr API</em> enabled distribution of <strong>Xepr</strong>.
+The Python interpreter and the <em>Numpy</em> module are usually available through the
+package manager of the Linux distribution being used; this is the preferred way.
+If your version of the Linux distribution does not include the required packages
+you may need to download and install them manually. See <a class="reference external" href="http://www.python.org">http://www.python.org</a> and
+<a class="reference external" href="http://pypi.python.org/pypi">http://pypi.python.org/pypi</a> for further information.</p>
+<p>The files <em>libxeprapi.so</em> and <em>XeprAPI.py</em> are located in the subdirectory
+<em>sharedProDeL/Standard/XeprAPI</em> of the main <strong>Xepr</strong> directory (typically <em>/opt/Bruker/xepr</em> or
+<em>/usr/xepr</em>).</p>
+<p>The following statement (for the <em>BASH</em> shell) can be used to set environment
+variables appropriately so the Python interpreter can locate the XeprAPI module:</p>
+<div class="highlight-python"><pre>export PYTHONPATH=$(Xepr --apipath):$PYTHONPATH</pre>
+</div>
+<p>For <em>TCSH</em> or <em>CSH</em> shells the following should work:</p>
+<div class="highlight-python"><pre>setenv PYTHONPATH `Xepr --apipath`</pre>
+</div>
+<p>(note: `` are backtick characters!). Adding the above statements to the files read by the shells upon
+start-up (typically <em>.bashrc</em> for <em>BASH</em> and <em>.tcshrc</em> or <em>.cshrc</em> for <em>TCSH</em> or <em>CSH</em>) would make them
+permanent settings. These start-up files are located in the user&#8217;s home directory.</p>
+<p>However, the following Python statements can be used to make the XeprAPI module available without
+setting up any environment variables. This line has to be inserted right before the <em>import XeprAPI</em>
+statement of your Python code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span><span class="p">;</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s">&quot;Xepr --apipath&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>At this point, you are ready to use the <em>Xepr API</em> for Python. Have a look at the <a class="reference external" href="Examples.html">Examples</a>
+section to get an idea of how to use the <em>Xepr API</em> for your applications.</p>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="XeprAPI Example Usage"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="About XeprAPI for Python"
+             >previous</a> |</li>
+    <li><a href="http://www.bruker-biospin.com/">Bruker BioSpin</a> &raquo;</li>
+    
+        <li><a href="index.html">XeprAPI 0.59 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bruker BioSpin.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

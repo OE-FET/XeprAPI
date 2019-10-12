@@ -1,0 +1,53 @@
+###########################
+Requirements & Installation
+###########################
+
+
+Requirements
+############
+
+    - recent version of **Xepr** (running on Linux x86-64 or x86-32) with *Xepr API* support
+    - API helper library (*libxeprapi.so*); part of the **Xepr** distribution
+    - the API interface for Python (*XeprAPI.py*); part of the **Xepr** distribution
+    - Python V2.5.x, V2.6.x or V2.7.x
+    - Python module *Numpy* >= V1.2.1
+
+
+Installation
+############
+
+    Both the API helper library, *libxeprapi.so*, and the API interface for Python,
+    *XeprAPI.py*, are included with the *Xepr API* enabled distribution of **Xepr**.
+    The Python interpreter and the *Numpy* module are usually available through the
+    package manager of the Linux distribution being used; this is the preferred way.
+    If your version of the Linux distribution does not include the required packages
+    you may need to download and install them manually. See http://www.python.org and
+    http://pypi.python.org/pypi for further information.
+
+    The files *libxeprapi.so* and *XeprAPI.py* are located in the subdirectory
+    *sharedProDeL/Standard/XeprAPI* of the main **Xepr** directory (typically */opt/Bruker/xepr* or
+    */usr/xepr*).
+
+    The following statement (for the *BASH* shell) can be used to set environment
+    variables appropriately so the Python interpreter can locate the XeprAPI module::
+
+        export PYTHONPATH=$(Xepr --apipath):$PYTHONPATH
+
+    For *TCSH* or *CSH* shells the following should work::
+
+        setenv PYTHONPATH `Xepr --apipath`
+
+    (note: `` are backtick characters!). Adding the above statements to the files read by the shells upon
+    start-up (typically *.bashrc* for *BASH* and *.tcshrc* or *.cshrc* for *TCSH* or *CSH*) would make them
+    permanent settings. These start-up files are located in the user's home directory.
+
+    However, the following Python statements can be used to make the XeprAPI module available without
+    setting up any environment variables. This line has to be inserted right before the *import XeprAPI*
+    statement of your Python code::
+
+        import os,sys; sys.path.insert(0, os.popen("Xepr --apipath").read())
+
+
+
+    At this point, you are ready to use the *Xepr API* for Python. Have a look at the `Examples <Examples.html>`_
+    section to get an idea of how to use the *Xepr API* for your applications.

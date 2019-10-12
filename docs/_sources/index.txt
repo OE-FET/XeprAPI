@@ -1,0 +1,45 @@
+.. XeprAPI documentation master file, created by
+   sphinx-quickstart on Mon Aug 20 10:19:56 2012.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+About XeprAPI for Python
+========================
+
+The **XeprAPI for Python** provides script driven control and operation of the **Xepr** application
+by Bruker BioSpin, it is implemented as a module to be imported by the Python interpreter.
+
+Features
+--------
+
+    * **XeprAPI for Python** complements the scripting capabilities provided by the **ProDeL** language with an
+      object-oriented approach
+    * **Xepr's** datasets, experiments and parameters are represented by Python objects
+    * **XeprAPI for Python** provides concurrent scripting, i.e. while a Python script is performing **Xepr**
+      operations, **Xepr** can still be controlled interactively by the operator using the **Xepr** GUI.
+    * native **Xepr** commands can be run by simply calling methods of a Python class provided by **XeprAPI for Python**
+    * the Python interpreter runs as a standalone process, thus it can be used with any third-party module
+      available for Python
+
+Contents
+========
+
+.. toctree::
+   :maxdepth: 2
+
+   Requirements & Installation <Installation>
+   XeprAPI Example Usage <Examples>
+   The XeprAPI Module <XeprAPI>
+   XeprAPI Scripting <Scripting>
+   Changelog <Changelog>
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+

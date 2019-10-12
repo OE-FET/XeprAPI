@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>XeprAPI Example Usage &mdash; XeprAPI 0.59 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.59',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="XeprAPI 0.59 documentation" href="index.html" />
+    <link rel="next" title="XeprAPI module" href="XeprAPI.html" />
+    <link rel="prev" title="Requirements &amp; Installation" href="Installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="XeprAPI.html" title="XeprAPI module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Installation.html" title="Requirements &amp; Installation"
+             accesskey="P">previous</a> |</li>
+    <li><a href="http://www.bruker-biospin.com/">Bruker BioSpin</a> &raquo;</li>
+    
+        <li><a href="index.html">XeprAPI 0.59 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">XeprAPI Example Usage</a><ul>
+<li><a class="reference internal" href="#code-examples">Code Examples</a></li>
+<li><a class="reference internal" href="#interactive-xeprapi-sessions">Interactive XeprAPI sessions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Installation.html"
+                        title="previous chapter">Requirements &amp; Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="XeprAPI.html"
+                        title="next chapter">XeprAPI module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Examples.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+    <h3>External Links</h3>
+    <ul class="external-links-menu">
+        <li><a href="http://www.numpy.org" target="_blank">NumPy documentation</a></li>
+        <li><a href="http://docs.python.org/2.6" target="_blank">Python documentation</a></li>
+    </ul>
+    
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="xeprapi-example-usage">
+<h1>XeprAPI Example Usage<a class="headerlink" href="#xeprapi-example-usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="code-examples">
+<h2>Code Examples<a class="headerlink" href="#code-examples" title="Permalink to this headline">¶</a></h2>
+<p>A few code examples making use of the <em>Xepr API for Python</em> can be found <a class="reference external" href="../examples">here</a>.
+Whether the scripts will work &#8216;as is&#8217; or might need to be modified depends on the specific spectrometer and <strong>Xepr</strong> setup
+(e.g. the hardware units available, experiments installed etc.). However, the scripts are
+supposed to show the capabilities of the <em>Xepr API</em> and the general workflow of typical
+applications.</p>
+</div>
+<div class="section" id="interactive-xeprapi-sessions">
+<h2>Interactive XeprAPI sessions<a class="headerlink" href="#interactive-xeprapi-sessions" title="Permalink to this headline">¶</a></h2>
+<p>Using an interactive Python shell (e.g. IPython) the <em>Xepr API for Python</em> can be used
+interactively. This can prove useful for developing scripts because you can run individual
+commands/statements in a step-by-step manner first before writing the actual script.</p>
+<p>To start an interactive session, the <em>Xepr API</em> has to be enabled once in <strong>Xepr</strong> by selecting the menu item &#8220;<em>Enable Xepr API</em>&#8221; in the &#8220;<em>XeprAPI</em>&#8221; sub-menu of the &#8220;<em>Processing</em>&#8221; menu. Here is an example of such an interactive session:</p>
+<div class="highlight-python"><pre>xuser@bruker:~&gt; ipython
+Python 2.6.5 (r265:79063, May  6 2011, 17:25:59)
+Type "copyright", "credits" or "license" for more information.
+
+IPython 0.10 -- An enhanced Interactive Python.
+?         -&gt; Introduction and overview of IPython's features.
+%quickref -&gt; Quick reference.
+help      -&gt; Python's own help system.
+object?   -&gt; Details about 'object'. ?object also works, ?? prints more.
+
+In [1]: import os,sys; sys.path.insert(0, os.popen("Xepr --apipath").read())  # this locates the XeprAPI module
+
+In [2]: import XeprAPI                     # load Xepr API module
+
+In [3]: Xepr=XeprAPI.Xepr()                # establish the API
+
+In [4]: cur_exp = Xepr.XeprExperiment()    # suppose an experiment is already loaded
+
+In [5]: cur_exp.aqExpRunAndWait()          # run experiment and wait for it to finish
+
+In [6]: dset = Xepr.XeprDataset()          # get the dataset from Xepr
+
+In [7]: dset.O.sum()                # calculate integral value of the ordinate data
+Out[7]: 9919435.0
+
+In [8]: dset.O[-20:]                # inspect the trailing ordinate values
+Out[8]:
+array([ 19563.5078125 ,  19567.98632812,  19563.03515625,  19568.37890625,
+        19565.08789062,  19562.16601562,  19560.15039062,  19566.09765625,
+        19562.14453125,  19563.06445312,  19567.9609375 ,  19565.15820312,
+        19565.90625   ,  19562.45703125,  19566.07617188,  19560.59765625,
+        19558.85742188,  19560.00390625,  19567.27148438,  19565.61132812], dtype=float32)
+
+In [9]: dset.O[-20:].std()                # calculate standard deviation
+Out[9]: 20.26338774
+
+In [10]: dset.O -= sum(dset.O[-20:])/20            # remove DC offset
+
+In [11]: dset.O.sum()                             # recalculate integral value
+Out[11]: -97370.891
+
+In [12]: dset.update(refresh=True, reverse=True)  # redraw the dataset in Xepr
+
+In [13]: import numpy as NP                       # now use Python module for arrays
+
+In [14]: lastidx=int(NP.argwhere(dset.O&gt;1000)[-1])    # find the end of the signal
+
+In [15]: X,O = dset.X[:lastidx], dset.O[:lastidx]     # cut away the silence
+
+In [16]: res = Xepr.XeprDataset(size=lastidx)         # create dataset for the result
+
+In [17]: res.X, res.O = X, O                          # fill it with the signal data
+
+In [18]: res.update(refresh=True)                     # and show the result
+
+In [19]: res.O *= NP.blackman(res.O.size)             # apply a blackman filter to the signal
+
+In [20]: res.update(refresh=True)                     # and show the result
+
+In [21]: NP.save("/tmp/filtered_signal.npy", res.O)   # save array for further processing etc.
+
+In [22]: # ... and so on ...</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="XeprAPI.html" title="XeprAPI module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Installation.html" title="Requirements &amp; Installation"
+             >previous</a> |</li>
+    <li><a href="http://www.bruker-biospin.com/">Bruker BioSpin</a> &raquo;</li>
+    
+        <li><a href="index.html">XeprAPI 0.59 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bruker BioSpin.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

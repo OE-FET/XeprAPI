@@ -1,0 +1,88 @@
+#####################
+XeprAPI Example Usage
+#####################
+
+
+Code Examples
+=============
+
+A few code examples making use of the *Xepr API for Python* can be found `here <../examples>`_.
+Whether the scripts will work 'as is' or might need to be modified depends on the specific spectrometer and **Xepr** setup
+(e.g. the hardware units available, experiments installed etc.). However, the scripts are
+supposed to show the capabilities of the *Xepr API* and the general workflow of typical
+applications.
+
+
+
+Interactive XeprAPI sessions
+============================
+
+Using an interactive Python shell (e.g. IPython) the *Xepr API for Python* can be used
+interactively. This can prove useful for developing scripts because you can run individual
+commands/statements in a step-by-step manner first before writing the actual script.
+
+To start an interactive session, the *Xepr API* has to be enabled once in **Xepr** by selecting the menu item "*Enable Xepr API*" in the "*XeprAPI*" sub-menu of the "*Processing*" menu. Here is an example of such an interactive session::
+
+    xuser@bruker:~> ipython
+    Python 2.6.5 (r265:79063, May  6 2011, 17:25:59)
+    Type "copyright", "credits" or "license" for more information.
+
+    IPython 0.10 -- An enhanced Interactive Python.
+    ?         -> Introduction and overview of IPython's features.
+    %quickref -> Quick reference.
+    help      -> Python's own help system.
+    object?   -> Details about 'object'. ?object also works, ?? prints more.
+
+    In [1]: import os,sys; sys.path.insert(0, os.popen("Xepr --apipath").read())  # this locates the XeprAPI module
+
+    In [2]: import XeprAPI                     # load Xepr API module
+
+    In [3]: Xepr=XeprAPI.Xepr()                # establish the API
+
+    In [4]: cur_exp = Xepr.XeprExperiment()    # suppose an experiment is already loaded
+
+    In [5]: cur_exp.aqExpRunAndWait()          # run experiment and wait for it to finish
+
+    In [6]: dset = Xepr.XeprDataset()          # get the dataset from Xepr
+
+    In [7]: dset.O.sum()                # calculate integral value of the ordinate data
+    Out[7]: 9919435.0
+
+    In [8]: dset.O[-20:]                # inspect the trailing ordinate values
+    Out[8]:
+    array([ 19563.5078125 ,  19567.98632812,  19563.03515625,  19568.37890625,
+            19565.08789062,  19562.16601562,  19560.15039062,  19566.09765625,
+            19562.14453125,  19563.06445312,  19567.9609375 ,  19565.15820312,
+            19565.90625   ,  19562.45703125,  19566.07617188,  19560.59765625,
+            19558.85742188,  19560.00390625,  19567.27148438,  19565.61132812], dtype=float32)
+
+    In [9]: dset.O[-20:].std()                # calculate standard deviation
+    Out[9]: 20.26338774
+
+    In [10]: dset.O -= sum(dset.O[-20:])/20            # remove DC offset
+
+    In [11]: dset.O.sum()                             # recalculate integral value
+    Out[11]: -97370.891
+
+    In [12]: dset.update(refresh=True, reverse=True)  # redraw the dataset in Xepr
+
+    In [13]: import numpy as NP                       # now use Python module for arrays
+
+    In [14]: lastidx=int(NP.argwhere(dset.O>1000)[-1])    # find the end of the signal
+
+    In [15]: X,O = dset.X[:lastidx], dset.O[:lastidx]     # cut away the silence
+
+    In [16]: res = Xepr.XeprDataset(size=lastidx)         # create dataset for the result
+
+    In [17]: res.X, res.O = X, O                          # fill it with the signal data
+
+    In [18]: res.update(refresh=True)                     # and show the result
+
+    In [19]: res.O *= NP.blackman(res.O.size)             # apply a blackman filter to the signal
+
+    In [20]: res.update(refresh=True)                     # and show the result
+
+    In [21]: NP.save("/tmp/filtered_signal.npy", res.O)   # save array for further processing etc.
+
+    In [22]: # ... and so on ...
+

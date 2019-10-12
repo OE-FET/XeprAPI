@@ -1,0 +1,22 @@
+#################
+XeprAPI Changelog
+#################
+
+
+**V0.59 and Xepr-2.6b.121**
+    * implementation of script keywords:  #NOTERM#  and  #NOWAIT#
+
+**V0.59**
+    * if a Python script is called from within Xepr, the PYTHONPATH will be set appropriately now.
+
+**V0.58**
+    * support for concurrent XeprAPI sessions if multiple Xepr instances are active
+
+**V0.57**
+    * simplified importing the XeprAPI module into a Python script
+
+**V0.56**
+    * fixed bug regarding *isComplex* attribute of *Dataset* class
+    * added *toXepr* and *fromXepr* methods to *Dataset* class
+    * optimized transfer speed btw. Xepr and XeprAPI for 2D datasets
+

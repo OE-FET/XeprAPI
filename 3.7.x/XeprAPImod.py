@@ -12,6 +12,7 @@ from pipes import quote
 import numpy as np
 import multiprocessing as mp
 import tkinter as tk
+from threading import RLock
 
 
 __author__ = 'Bruker BioSpin, Sam Schott'
@@ -199,6 +200,8 @@ class Xepr(object):
 
     """
 
+    _lock = RLock()
+
     def __init__(self, constantconstants=True, libxeprapi=None, verbose=False, pid=None):
         self._APIopen = False
         self._API = _loadapilib(libxeprapi)
@@ -252,9 +255,10 @@ class Xepr(object):
 
     def XeprActive(self):
         """
-            :returns: *True* if the *Xepr API* is active.
+        :returns: *True* if the *Xepr API* is active.
         """
-        return self._API.XeprAPIactive() >= SUCCESS
+        with self._lock:
+            return self._API.XeprAPIactive() >= SUCCESS
 
     def XeprOpen(self):
         """
@@ -440,18 +444,19 @@ class Xepr(object):
 
         :raises: IOError exception in case shutting down the *Xepr API* did not succeed.
         """
-        for func in self._dynamicmethods:
-            delattr(self, func)
 
-        self._dynamicmethods = []
-        self._printmsg('Closing API...', newline=False)
-        if self._API.XeprDisableAPI(1) == SUCCESS:
-            self._printmsg('done.', prefix='')
-            self._APIopen = False
-        else:
-            self._printmsg('done.', prefix='')
-            raise IOError('%sCould not close API' % _msgprefix)
-        return
+        with self._lock:
+            for func in self._dynamicmethods:
+                delattr(self, func)
+
+            self._dynamicmethods = []
+            self._printmsg('Closing API...', newline=False)
+            if self._API.XeprDisableAPI(1) == SUCCESS:
+                self._printmsg('done.', prefix='')
+                self._APIopen = False
+            else:
+                self._printmsg('done.', prefix='')
+                raise IOError('%sCould not close API' % _msgprefix)
 
     def _popvalue(self):
         dtype_ord = ctypes.c_int()
@@ -496,29 +501,32 @@ class Xepr(object):
         self._API.XeprPushValue(stacktype, data, len(data))
 
     def _callXeprfunc(self, funcidx, returnavalue, *p):
-        listofbuffers = []
-        for arg in p:
-            self._pushvalue(arg)
-            if isinstance(arg, Xepr.Xeprbuf):
-                listofbuffers.append(arg.buffer)
 
-        if self._API.XeprCallFunction(funcidx) != 0:
-            raise ValueError('%sError processing function call' % _msgprefix)
+        with self._lock:
+            listofbuffers = []
+            for arg in p:
+                self._pushvalue(arg)
+                if isinstance(arg, Xepr.Xeprbuf):
+                    listofbuffers.append(arg.buffer)
 
-        for buf in reversed(listofbuffers):
-            buf_len = len(buf.tostring())
-            tmpbuf = ctypes.create_string_buffer(buf_len)
-            self._API.XeprGetMutable(byref(tmpbuf), buf_len)
-            buf[:] = np.frombuffer(tmpbuf.raw, dtype=buf.dtype)
+            if self._API.XeprCallFunction(funcidx) != 0:
+                raise ValueError('%sError processing function call' % _msgprefix)
 
-        if returnavalue:
-            return self._popvalue()
+            for buf in reversed(listofbuffers):
+                buf_len = len(buf.tostring())
+                tmpbuf = ctypes.create_string_buffer(buf_len)
+                self._API.XeprGetMutable(byref(tmpbuf), buf_len)
+                buf[:] = np.frombuffer(tmpbuf.raw, dtype=buf.dtype)
+
+            if returnavalue:
+                return self._popvalue()
 
     def XeprGUIrefresh(self):
         """
             Refreshes the **Xepr** GUI.
         """
-        self._API.XeprRefreshGUI()
+        with self._lock:
+            self._API.XeprRefreshGUI()
 
     def _getprodelprototypes(self, *path):
         directory = os.path.join(*path)

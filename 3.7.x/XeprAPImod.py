@@ -1,5 +1,5 @@
 """
-    *Xepr API* module for Python 3.7, providing access to **Xepr** via *libxeprapi.so*
+*Xepr API* module for Python 3.7, providing access to **Xepr** via *libxeprapi.so*
 """
 
 import types
@@ -425,12 +425,12 @@ class Xepr(object):
         Examples::
 
             # ...suppose we already have the Xepr object...
-            >>> cur_exp = Xepr.XeprExperiment()     # access current experiment in Xepr
+            >>> cur_exp = xepr.XeprExperiment()     # access current experiment in Xepr
 
-            >>> cw_exp = Xepr.XeprExperiment("CWExp", exptype="C.W.", axs1="Field",   # create CW experiment
+            >>> cw_exp = xepr.XeprExperiment("CWExp", exptype="C.W.", axs1="Field",   # create CW experiment
             ...                              ordaxs="Signal channel", addgrad=True)   # and add a gradient unit
 
-            >>> pulse_exp = Xepr.XeprExperiment("PulseExp", exptype="Pulse",                # create a pulse
+            >>> pulse_exp = xepr.XeprExperiment("PulseExp", exptype="Pulse",                # create a pulse
             ...                                axs1="Field", ordaxs="Transient recorder")   # experiment
         """
         # noinspection PyTypeChecker

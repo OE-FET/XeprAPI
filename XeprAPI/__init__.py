@@ -2,12 +2,15 @@
 #
 # (c) Copyright 2014, Bruker BioSpin
 #
+# Modified by Sam Schott, University of Cambridge 2019.
+#
 
 import os
 import sys
 
 _msgprefix = "Xepr API: "
-
+__version__ = "0.60"
+__author__ = "Sam Schott, Bruker Biospin"
 
 def _getpath(major, minor):
     toppath = os.path.dirname(os.path.realpath(__file__))
@@ -23,5 +26,4 @@ def _main():
 
 _main()
 
-from XeprAPImod import Xepr, DatasetError, DimensionError, ExperimentError, ParameterError, \
-                       __author__, __version__, getXeprInstances
+from XeprAPImod import Xepr, DatasetError, DimensionError, ExperimentError, ParameterError, getXeprInstances

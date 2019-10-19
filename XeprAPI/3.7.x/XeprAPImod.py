@@ -15,9 +15,6 @@ import tkinter as tk
 from threading import RLock
 
 
-__author__ = 'Bruker BioSpin, Sam Schott'
-__version__ = 0.60
-
 _msgprefix = 'Xepr API: '
 _encoding = 'ISO-8859-1'
 

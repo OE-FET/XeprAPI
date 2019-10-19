@@ -1,15 +1,14 @@
 # uncompyle6 version 3.4.1
 # Python bytecode 2.7 (62211)
-# Decompiled from: Python 3.7.4 (default, Sep  7 2019, 18:27:02) 
+# Decompiled from: Python 3.7.4 (default, Sep  7 2019, 18:27:02)
 # [Clang 10.0.1 (clang-1001.0.46.4)]
 # Embedded file name: /home/thob/Develop/xeprdev/xeprgit/linux/../StdEnvironment/sharedProDeL/Standard/XeprAPI.py
 # Compiled at: 2014-10-08 15:31:14
 """
-    *Xepr API* module for Python, providing access to **Xepr** via *libxeprapi.so*
+*Xepr API* module for Python, providing access to **Xepr** via *libxeprapi.so*
 """
-__author__ = 'Bruker BioSpin'
-__version__ = 0.59
 _msgprefix = 'Xepr API: '
+
 import types, sys
 assert not sys.version_info[0] != 2 or not sys.version_info[1] in [5, 6, 7], '%sNeed Python V2.5.x, V2.6.x or V2.7.x to use XeprAPI' % _msgprefix
 import os, tempfile, re, ctypes
@@ -24,566 +23,569 @@ try:
     assert not _tmp[0] == 1 and (_tmp[1] == 2 and len(_tmp) == 3 and _tmp[2] < 1)
 except:
     raise ImportError('%sNeed recent (>= V1.2.1) Numpy package for Python' % _msgprefix)
-else:
-    try:
-        import multiprocessing as MP
-    except:
-        import Queue
-    else:
+
+try:
+    import multiprocessing as MP
+except:
+    import Queue
+
+try:
+    import Tkinter as tk
+except:
+    pass
+
+try:
+    ctypes.c_bool
+except:
+    ctypes.c_bool = ctypes.c_byte
+
+
+PRODELDOCSUBDIR = 'Examples'
+SUCCESS = 0
+
+
+class pointer(ctypes.c_int32):
+
+    def __init__(self, val=None):
+        if val == None:
+            ctypes.c_int32.__init__(self)
+        elif type(val) == pointer:
+            val = val.value
+        else:
+            ctypes.c_int32.__init__(self, val)
+
+        return
+
+
+class char(ctypes.c_char):
+
+    def __init__(self, val=None):
+        if val == None:
+            ctypes.c_char.__init__(self)
+        elif type(val) == char:
+            val = val.value
+        else:
+            ctypes.c_char.__init__(self, val)
+
+        return
+
+
+def _loadapilib(libxeprapi=None):
+    libname = 'libxeprapi_32.so' if ctypes.sizeof(ctypes.c_void_p) * 8 == 32 else 'libxeprapi.so'
+    if not libxeprapi:
         try:
-            import Tkinter as tk
+            libxeprapi = os.path.dirname(os.path.realpath(__file__))
         except:
-            pass
+            libxeprapi = '.'
 
+    libxeprapi += libname if libxeprapi.endswith('/') else '/' + libname
+    newlibname = tempfile.mkstemp(suffix='.so', prefix='lib')
+    os.write(newlibname[0], open(libxeprapi).read())
+    os.close(newlibname[0])
+    libAPI = ctypes.cdll.LoadLibrary(newlibname[1])
+    os.unlink(newlibname[1])
+    return libAPI
+
+
+def _findInst(apilib):
+    buf = ctypes.create_string_buffer(255)
+    apilib.XeprGetSockDir(buf)
+    topdir = buf.value
+    dgramfile = map(str.split, open('/proc/net/unix').read().splitlines())
+    suffserv = ctypes.string_at(apilib.suffserv)
+    suffclient = ctypes.string_at(apilib.suffclient)
+    sufftitle = ctypes.string_at(apilib.sufftitle)
+    xeprsocks = [ f[(-1)] for f in dgramfile if f[(-1)].startswith(topdir) ]
+    activedirs = [ os.path.dirname(f) for f in xeprsocks if f.endswith(suffserv) ]
+    unconnected = [ f for f in activedirs if '%s/%s' % (f, suffclient) not in xeprsocks ]
+    return [ (int(os.path.basename(f)), open(os.path.join(f, sufftitle)).read()) for f in unconnected ]
+
+
+class _InstSelect():
+
+    def __init__(self, items):
+        self.items = items
+        self.result = None
+        master = self.master = tk.Tk()
+        master.resizable(width=0, height=0)
+        master.title('XeprAPI: Select Instance')
+        labelfont = ('sans', 10)
+        self.label = tk.Label(master, text='Select Xepr instance to connect to:', font=labelfont, padx=32, pady=32)
+        self.lframe = tk.Frame(relief=tk.SUNKEN)
+        self.spacer1 = tk.Frame()
+        self.spacer2 = tk.Frame()
+        self.listbox = tk.Listbox(self.lframe, font=labelfont, width=40)
+        for item in items:
+            self.listbox.insert(tk.END, item)
+
+        self.scrollbar = tk.Scrollbar(self.lframe)
+        self.scrollbar.config(command=self.listbox.yview)
+        self.listbox.config(yscrollcommand=self.scrollbar.set)
+        self.listbox.bind('<Double-Button-1>', self.selectcmd)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.listbox.pack(fill=tk.Y, expand=1)
+        self.selectit = tk.Button(master, text='Select', font=labelfont, command=self.selectcmd)
+        self.cancel = tk.Button(master, text='Cancel', font=labelfont, command=self.master.quit)
+        self.label.pack()
+        self.lframe.pack(fill=tk.BOTH, expand=1)
+        self.spacer2.pack(fill=tk.X, pady=16)
+        self.selectit.pack(side=tk.LEFT)
+        self.cancel.pack(side=tk.RIGHT)
+        master.mainloop()
+        return
+
+    def selectcmd(self, *l):
         try:
-            ctypes.c_bool
+            self.result = int(self.listbox.curselection()[0])
         except:
-            ctypes.c_bool = ctypes.c_byte
-
-    PRODELDOCSUBDIR = 'Examples'
-    SUCCESS = 0
-
-    class pointer(ctypes.c_int32):
-
-        def __init__(self, val=None):
-            if val == None:
-                ctypes.c_int32.__init__(self)
-            elif type(val) == pointer:
-                val = val.value
-            else:
-                ctypes.c_int32.__init__(self, val)
-
-            return
-
-
-    class char(ctypes.c_char):
-
-        def __init__(self, val=None):
-            if val == None:
-                ctypes.c_char.__init__(self)
-            elif type(val) == char:
-                val = val.value
-            else:
-                ctypes.c_char.__init__(self, val)
-
-            return
-
-
-    def _loadapilib(libxeprapi=None):
-        libname = 'libxeprapi_32.so' if ctypes.sizeof(ctypes.c_void_p) * 8 == 32 else 'libxeprapi.so'
-        if not libxeprapi:
-            try:
-                libxeprapi = os.path.dirname(os.path.realpath(__file__))
-            except:
-                libxeprapi = '.'
-
-        libxeprapi += libname if libxeprapi.endswith('/') else '/' + libname
-        newlibname = tempfile.mkstemp(suffix='.so', prefix='lib')
-        os.write(newlibname[0], open(libxeprapi).read())
-        os.close(newlibname[0])
-        libAPI = ctypes.cdll.LoadLibrary(newlibname[1])
-        os.unlink(newlibname[1])
-        return libAPI
-
-
-    def _findInst(apilib):
-        buf = ctypes.create_string_buffer(255)
-        apilib.XeprGetSockDir(buf)
-        topdir = buf.value
-        dgramfile = map(str.split, open('/proc/net/unix').read().splitlines())
-        suffserv = ctypes.string_at(apilib.suffserv)
-        suffclient = ctypes.string_at(apilib.suffclient)
-        sufftitle = ctypes.string_at(apilib.sufftitle)
-        xeprsocks = [ f[(-1)] for f in dgramfile if f[(-1)].startswith(topdir) ]
-        activedirs = [ os.path.dirname(f) for f in xeprsocks if f.endswith(suffserv) ]
-        unconnected = [ f for f in activedirs if '%s/%s' % (f, suffclient) not in xeprsocks ]
-        return [ (int(os.path.basename(f)), open(os.path.join(f, sufftitle)).read()) for f in unconnected ]
-
-
-    class _InstSelect():
-
-        def __init__(self, items):
-            self.items = items
             self.result = None
-            master = self.master = tk.Tk()
-            master.resizable(width=0, height=0)
-            master.title('XeprAPI: Select Instance')
-            labelfont = ('sans', 10)
-            self.label = tk.Label(master, text='Select Xepr instance to connect to:', font=labelfont, padx=32, pady=32)
-            self.lframe = tk.Frame(relief=tk.SUNKEN)
-            self.spacer1 = tk.Frame()
-            self.spacer2 = tk.Frame()
-            self.listbox = tk.Listbox(self.lframe, font=labelfont, width=40)
-            for item in items:
-                self.listbox.insert(tk.END, item)
 
-            self.scrollbar = tk.Scrollbar(self.lframe)
-            self.scrollbar.config(command=self.listbox.yview)
-            self.listbox.config(yscrollcommand=self.scrollbar.set)
-            self.listbox.bind('<Double-Button-1>', self.selectcmd)
-            self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-            self.listbox.pack(fill=tk.Y, expand=1)
-            self.selectit = tk.Button(master, text='Select', font=labelfont, command=self.selectcmd)
-            self.cancel = tk.Button(master, text='Cancel', font=labelfont, command=self.master.quit)
-            self.label.pack()
-            self.lframe.pack(fill=tk.BOTH, expand=1)
-            self.spacer2.pack(fill=tk.X, pady=16)
-            self.selectit.pack(side=tk.LEFT)
-            self.cancel.pack(side=tk.RIGHT)
-            master.mainloop()
-            return
-
-        def selectcmd(self, *l):
-            try:
-                self.result = int(self.listbox.curselection()[0])
-            except:
-                self.result = None
-
-            self.master.quit()
-            return
+        self.master.quit()
+        return
 
 
-    def _runInstSelect(thelist, thequeue):
-        selector = _InstSelect(thelist)
-        thequeue.put(selector.result)
+def _runInstSelect(thelist, thequeue):
+    selector = _InstSelect(thelist)
+    thequeue.put(selector.result)
 
 
-    def getXeprInstances():
-        """
-        Detects **Xepr** instances which are waiting for connections from XeprAPI clients. For this to work, the API has to be
-        enabled in **Xepr** (menu "*Processing*"  ->  sub-menu "*XeprAPI*"  ->  menu item "*Enable Xepr API*"). Xepr instances which
-        already are connected to an XeprAPI client are not listed.
-
-        :return:        Dictionary of Xepr process ID numbers as its keys and the visible window title of the
-                        Xepr instance as the corresponding values. The process ID (PID) keys can be used to connect to a specific
-                        **Xepr** instance by specifying the PID when creating an object of :class:`~Xepr`.
+def getXeprInstances():
     """
-        apilib = _loadapilib()
-        instances = _findInst(apilib)
-        return dict([ (p, t) for p, t in instances ])
+    Detects **Xepr** instances which are waiting for connections from XeprAPI clients. For this to work, the API has to be
+    enabled in **Xepr** (menu "*Processing*"  ->  sub-menu "*XeprAPI*"  ->  menu item "*Enable Xepr API*"). Xepr instances which
+    already are connected to an XeprAPI client are not listed.
+
+    :return:        Dictionary of Xepr process ID numbers as its keys and the visible window title of the
+                    Xepr instance as the corresponding values. The process ID (PID) keys can be used to connect to a specific
+                    **Xepr** instance by specifying the PID when creating an object of :class:`~Xepr`.
+"""
+    apilib = _loadapilib()
+    instances = _findInst(apilib)
+    return dict([ (p, t) for p, t in instances ])
 
 
-    class Xepr(object):
-        """
-        Initializes the Xepr object and establishes a connection to the Xepr software. For this to work, the API has to be enabled in
-        **Xepr** (menu "*Processing*"  ->  sub-menu "*XeprAPI*"  ->  menu item "*Enable Xepr API*").
+class Xepr(object):
+    """
+    Initializes the Xepr object and establishes a connection to the Xepr software. For this to work, the API has to be enabled in
+    **Xepr** (menu "*Processing*"  ->  sub-menu "*XeprAPI*"  ->  menu item "*Enable Xepr API*").
 
-        :param constantconstants: If *True*, ProDeL constants are only requested once upon API initialization; if *False*, the
-                constants are requested from **Xepr** each time they are used in XeprAPI classes or in the Python script
-                instantiating the class object. Typically, there is no reason to change the default behavior.
-        :type constantconstants:    True or False; default = True
+    :param constantconstants: If *True*, ProDeL constants are only requested once upon API initialization; if *False*, the
+            constants are requested from **Xepr** each time they are used in XeprAPI classes or in the Python script
+            instantiating the class object. Typically, there is no reason to change the default behavior.
+    :type constantconstants:    True or False; default = True
 
-        :param libxeprapi: Specify path to the helper library *libxeprapi.so*. If no path is given, XeprAPI looks for the library in the directory
-                           where the XeprAPI Python module is located as well as in the current directory.
-        :type libxeprapi:  string or None; default = None
+    :param libxeprapi: Specify path to the helper library *libxeprapi.so*. If no path is given, XeprAPI looks for the library in the directory
+                       where the XeprAPI Python module is located as well as in the current directory.
+    :type libxeprapi:  string or None; default = None
 
-        :param verbose:    If *True*, enables a few messages in the XeprAPI module.
-        :type verbose:     True or False; default = False
+    :param verbose:    If *True*, enables a few messages in the XeprAPI module.
+    :type verbose:     True or False; default = False
 
-        :param pid:    Connect to a specific **Xepr** instance (corresponding to this process ID). If no *pid* value is specified an
-                       **Xepr** instance will be sought out upon construction.
-        :type pid:     integer value or *None*
+    :param pid:    Connect to a specific **Xepr** instance (corresponding to this process ID). If no *pid* value is specified an
+                   **Xepr** instance will be sought out upon construction.
+    :type pid:     integer value or *None*
 
-        :return:           Instance of :class:`~Xepr`
+    :return:           Instance of :class:`~Xepr`
 
-        Example::
+    Example::
 
-            >>> import XeprAPI
+        >>> import XeprAPI
 
-            >>> Xepr=XeprAPI.Xepr()
+        >>> Xepr=XeprAPI.Xepr()
 
-  """
+"""
 
-        def __init__(self, constantconstants=True, libxeprapi=None, verbose=False, pid=None):
-            self._APIopen = False
-            self._API = _loadapilib(libxeprapi)
-            self._constantconstants = constantconstants
-            self.verbose = verbose
-            self._dynamicmethods = []
-            if 'XEPR_PID' not in os.environ:
-                self._setDestPID(pid)
+    def __init__(self, constantconstants=True, libxeprapi=None, verbose=False, pid=None):
+        self._APIopen = False
+        self._API = _loadapilib(libxeprapi)
+        self._constantconstants = constantconstants
+        self.verbose = verbose
+        self._dynamicmethods = []
+        if 'XEPR_PID' not in os.environ:
+            self._setDestPID(pid)
+        else:
+            self._setDestPID(int(os.environ['XEPR_PID']))
+        self.XeprOpen()
+
+    def __del__(self):
+        self._API.XeprDisableAPI(0)
+
+    def _findInstances(self):
+        return _findInst(self._API)
+
+    def _setDestPID(self, pid=None):
+        available = self._findInstances()
+        if available:
+            if pid != None:
+                if pid not in [ x[0] for x in available ]:
+                    raise ValueError('No such Xepr instance waiting for connections.')
+            elif len(available) == 1:
+                pid = available[0][0]
             else:
-                self._setDestPID(int(os.environ['XEPR_PID']))
-            self.XeprOpen()
-
-        def __del__(self):
-            self._API.XeprDisableAPI(0)
-
-        def _findInstances(self):
-            return _findInst(self._API)
-
-        def _setDestPID(self, pid=None):
-            available = self._findInstances()
-            if available:
-                if pid != None:
-                    if pid not in [ x[0] for x in available ]:
-                        raise ValueError('No such Xepr instance waiting for connections.')
-                elif len(available) == 1:
-                    pid = available[0][0]
-                else:
-                    try:
-                        theList = [ '%s (PID %u)' % (x[1], x[0]) for x in available ]
-                        if 'MP' in globals():
-                            theQueue = MP.Queue()
-                            theProcess = MP.Process(target=_runInstSelect, args=(
-                             theList, theQueue))
-                            theProcess.start()
-                        else:
-                            theQueue = Queue.Queue()
-                            _runInstSelect(theList, theQueue)
-                        res = theQueue.get()
-                    except:
-                        res = 0
-
-                    if res != None:
-                        pid = available[res][0]
-            if not pid:
-                raise IOError('%sCould not connect to any Xepr instance.' % _msgprefix)
-            else:
-                self._API.XeprSetInstPID(pid)
-            return
-
-        def _printmsg(self, msg, newline=True, prefix=_msgprefix):
-            if self.verbose:
-                if prefix:
-                    print >> stderr, '%s%s%s' % (prefix, msg, '\n' if newline else ''),
-                else:
-                    print >> stderr, '%s%s' % (msg, '\n' if newline else ''),
-
-        def XeprActive(self):
-            """
-        :returns: *True* if the *Xepr API* is active.
-    """
-            return self._API.XeprAPIactive() >= SUCCESS
-
-        def XeprOpen(self):
-            """
-        Opens the Xepr API for Python. Can be used to re-open the API after having closed it using :meth:`XeprClose`. Usually, you
-        will not need to open the API manually, since it will be opened automatically upon instantiation of the :class:`~Xepr` class, i.e.
-        by creating an instance of :class:`XeprAPI.Xepr()`.
-
-        :raises: IOError exception in case opening the *Xepr API* did not succeed.
-    """
-            self._printmsg('Opening Xepr API...', newline=False)
-            if self._API.XeprAPIactive() < SUCCESS:
-                self._printmsg('failed.', prefix=None)
-                raise IOError('%sCould not open API' % _msgprefix)
-            namesP = ctypes.c_char_p()
-            argsP = ctypes.c_char_p()
-            retsP = ctypes.c_char_p()
-            numoffunctions = self._API.XeprGetFunctions(byref(namesP), byref(argsP), byref(retsP))
-            assert not numoffunctions < SUCCESS, '%sUnable to retrieve API function list' % _msgprefix
-            listoffunctions = ctypes.string_at(namesP).splitlines()
-            listofargs = NP.fromstring(ctypes.string_at(argsP, numoffunctions), NP.int8)
-            listofrets = NP.fromstring(ctypes.string_at(retsP, numoffunctions), NP.bool)
-            prodeldirP = ctypes.c_char_p()
-            self._API.XeprGetProDeLDir(byref(prodeldirP))
-            prodeldoc = self._getprodelprototypes(ctypes.string_at(prodeldirP), PRODELDOCSUBDIR)
-            self._prodeldoc = prodeldoc
-            for idx, func, args, rets in zip(range(len(listoffunctions)), listoffunctions, listofargs, listofrets):
-                if hasattr(self, func):
-                    func = '_%s_' % func
-                self._dynamicmethods.append(func)
-                returnavalue = 'True' if rets else 'False'
-                if args >= 0:
-                    if self._constantconstants and args == 0 and func.isupper() and rets:
-                        setattr(self, func, self._callXeprfunc(idx, True))
-                    else:
-                        params = (', ').join([ 'p%u' % i for i in range(args) ])
-                        setattr(self, func, types.MethodType(eval('lambda self,%s: self._callXeprfunc(%u, %s, %s)' % (
-                         params, idx, returnavalue, params)), self, self.__class__))
-                else:
-                    setattr(self, func, types.MethodType(eval('lambda self, *p: self._callXeprfunc(%u, %s, *(p+(len(p),)))' % (
-                     idx, returnavalue)), self, self.__class__))
-                if hasattr(getattr(self, func), '__func__'):
-                    if func in prodeldoc:
-                        setattr(getattr(self, func).__func__, '__doc__', prodeldoc[func] + '\n\nSee ProDeL documentation in Xepr for more information.')
-                    else:
-                        setattr(getattr(self, func).__func__, '__doc__', 'See ProDeL documentation in Xepr for information.')
-
-            self._printmsg('done.', prefix=None)
-            commandsP, argdescsP = ctypes.c_char_p(), ctypes.c_char_p()
-            numofcommands = self._API.XeprGetXeprCommands(byref(commandsP), byref(argdescsP))
-            assert not numofcommands < SUCCESS, '%sUnable to retrieve Xepr function list' % _msgprefix
-            listofcommands = ctypes.string_at(commandsP).splitlines()
-            listofcommandargs = ctypes.string_at(argdescsP).splitlines()
-            self.XeprCmds = self._cmds()
-            self.XeprCmds._execCmd = self.execCmd
-            for cmdname, arg in zip(listofcommands, listofcommandargs):
-                if cmdname[0].isalpha():
-                    setattr(self.XeprCmds, cmdname, types.MethodType(eval("lambda self, *p: self._execCmd('%s', *p)" % cmdname), self.XeprCmds, self._cmds))
-
-            return
-
-        def getTitle(self, dset):
-            buf = self.Xeprbuf(1024)
-            self._getTitle_(dset, buf)
-            return buf.getstr()
-
-        def aqGetStrParValue(self, *p):
-            buf = self.Xeprbuf(1024)
-            self._aqGetStrParValue_(*(p + (buf, len(buf))))
-            return buf.getstr()
-
-        def aqGetSplFormula(self, *p):
-            buf = self.Xeprbuf(1024)
-            self._aqGetSplFormula_(*(p + (buf, len(buf))))
-            return buf.getstr()
-
-        def aqGetParUnits(self, *p):
-            buf = self.Xeprbuf(1024)
-            self._aqGetParUnits_(*(p + (buf, len(buf))))
-            return buf.getstr()
-
-        def aqGetParLabel(self, *p):
-            buf = self.Xeprbuf(1024)
-            self._aqGetParLabel_(*(p + (buf, len(buf))))
-            return buf.getstr()
-
-        def aqGetSplName(self, *p):
-            buf = self.Xeprbuf(1024)
-            self._aqGetSplName_(*(p + (buf, len(buf))))
-            return buf.getstr()
-
-        def aqGetComment(self, *p):
-            buf = self.Xeprbuf(1024)
-            self._aqGetComment_(*(p + (buf, len(buf))))
-            return buf.getstr()
-
-        def XeprDataset(self, *p, **k):
-            """
-        Create a :class:`~Dataset` object for accessing Xepr's datasets or creating new datasets (both 1D and 2D).
-
-        :param size: Size of dataset to be created. If *size* = *None*, no dataset is created, but it will be retrieved from the **Xepr** dataset
-                     specified by *xeprset* upon access to one of the attributes of the dataset object. If *size* is an integer number,
-                     a 1D dataset will be created, with *size* being the number of values on the abscissa. If *size* is a tuple of two integer
-                     numbers, i.e. (X,Y), a 2D dataset will be created, with X being the number of values on the first abscissa and Y
-                     the number of values on the second abscissa.
-        :type size:  integer value or tuple of integer values or None; default = None
-        :param shape: similar to *size* argument, but in reversed order for 2D datasets, where *shape* = (Y,X) will create a dataset with
-                      X being the number of values on the first abscissa and Y the number of values on the second abscissa. For 1D
-                      datasets, *size* and *shape* have the same meaning.
-        :type shape:  integer value or tuple of integer values or None; default = None
-
-        :param autorefresh: If *True*, the GUI of the **Xepr** application will be refreshed each time the :meth:`~Dataset.update`
-                            method is
-                            called. If *False*, the GUI is refreshed only by calling the :meth:`~XeprGUIrefresh` method or if the
-                            :meth:`~Dataset.update` method is called with the 'refresh' option.
-        :type autorefresh:  True or False; default = False
-        :param xeprset:     Select the dataset of the **Xepr** application to be used for writing a dataset to
-                            (by calling :meth:`~Dataset.update`) or for retrieving a dataset from.
-        :type xeprset:      string, default = "primary"
-        :param iscomplex:   If *True*, a dataset would be created with a complex ordinate. Only valid if *size* != *None*,
-                            i.e. if a dataset is to be created.
-        :type iscomplex:    True or False; default = False
-
-        Examples::
-
-            # ...suppose we already have the Xepr object...
-            >>> dset_pri = Xepr.XeprDataset()                          # retrieve Xepr's primary dataset
-            >>> dset_sec = Xepr.XeprDataset(xeprset = "secondary")     # retrieve Xepr's secondary dataset
-
-            >>> dset1D = Xepr.XeprDataset(size = 1024,                 # create 1D dataset with 1024 abscissa values
-                                          xeprset = "secondary")       # associated with Xepr's secondary dataset
-
-            >>> dset2D = Xepr.XeprDataset(size = (1024, 25))           # create 2D dataset with X * Y = 1024 * 25 values
-            # this produces the same type of dataset:
-            >>> dset2D = Xepr.XeprDataset(shape = (25, 1024))          # using shape argument: Y * X = 25 * 1024 values
-    """
-            return Dataset(self, *p, **k)
-
-        def XeprExperiment(self, *p, **k):
-            """
-        Creates Experiment object to create a new experiment or to access an experiment already set up by the operator of the **Xepr**
-        application.
-
-        :param name_or_vp:  If *name_or_vp* is an integer value, the :class:`~Experiment` object accesses the experiment corresponding
-                            to the **Xepr** viewport specified by *name_or_vp*; by default, the viewport number is *-1*, i.e. the
-                            current viewport. If *name_or_vp* is a string, it is used as the name of the experiment in **Xepr** to be
-                            created or accessed. If none of the remaining parameters is explicitly set, the :class:`~Experiment` object
-                            accesses the **Xepr** experiment by the name given for *name_or_vp*. If in addition to the string in
-                            *name_or_vp* any parameter is given, **Xepr** will try to build the experiment described by the parameters.
-        :type name_or_vp:   string or integer number; default = -1
-        :param exptype:     type of the experiment to be built, e.g. "C.W." or "Pulse".
-        :type exptype:      string or None; default = None
-        :param axs1:        Type of the first abscissa, e.g. "Field"; required for building a 1D or 2D experiment.
-        :type axs1:         string or None; default = None
-        :param axs2:        Type of the first abscissa, e.g. "Field"; required for building a 2D experiment.
-        :type axs2:         string or None; default = None
-        :param ordaxs:      Type of the ordinate, e.g. "Signal channel" or "Transient recorder"; required for building 1D or 2D experiments.
-        :type ordaxs:       string or None: default = None
-        :param addgrad:     If *True*, add gradient unit to the experiment to be built.
-        :param addgonio:    If *True*, add goniometer unit to the experiment to be built.
-        :param addvtu:      If *True*, add temperature controller to the experiment to be built.
-
-        Examples::
-
-            # ...suppose we already have the Xepr object...
-            >>> cur_exp = Xepr.XeprExperiment()     # access current experiment in Xepr
-
-            >>> cw_exp = Xepr.XeprExperiment("CWExp", exptype="C.W.", axs1="Field",   # create CW experiment
-                                             ordaxs="Signal channel", addgrad=True)   # and add a gradient unit
-
-            >>> pulse_exp = Xepr.XeprExperiment("PulseExp", exptype="Pulse",                # create a pulse
-                                               axs1="Field", ordaxs="Transient recorder")   # experiment
-    """
-            return Experiment(self, *p, **k)
-
-        def XeprClose(self):
-            """
-        Closes the API and tells **Xepr** to shut down its API support as well. After that, the API support of **Xepr**
-        has to be re-enabled manually by the **Xepr** operator (menu "*Processing*"  ->  sub-menu "*XeprAPI*"
-        ->  menu item "*Enable Xepr API*") to be able to establish the *Xepr API* again.
-
-        :raises: IOError exception in case shutting down the *Xepr API* did not succeed.
-    """
-            for func in self._dynamicmethods:
-                delattr(self, func)
-
-            self._dynamicmethods = []
-            self._printmsg('Closing API...', newline=False)
-            if self._API.XeprDisableAPI(1) == SUCCESS:
-                self._printmsg('done.', prefix=None)
-                self._APIopen = False
-            else:
-                self._printmsg('done.', prefix=None)
-                raise IOError('%sCould not close API' % _msgprefix)
-            return
-
-        def _popvalue(self):
-            dtype_ord = ctypes.c_int()
-            data = ctypes.create_string_buffer(255)
-            self._API.XeprPopValue(byref(dtype_ord), data)
-            dtype = STACK_TYPES[dtype_ord.value]
-            if hasattr(ctypes.c_int, 'from_buffer_copy'):
-                if dtype != pointer:
-                    return dtype.from_buffer_copy(data).value
-                return dtype.from_buffer_copy(data)
-            else:
-                if dtype == pointer:
-                    tmpint = ctypes.c_int32.from_address(ctypes.addressof(data))
-                    val = pointer(tmpint.value)
-                    return val
-                val = dtype.from_address(ctypes.addressof(data))
-                return val.value
-
-        def _pushvalue(self, val):
-            dtype = None
-            if isinstance(val, pointer):
-                dtype = pointer
-            else:
-                if isinstance(val, Xepr.Xeprbuf):
-                    dtype = Xepr.Xeprbuf
-                elif isinstance(val, bool):
-                    dtype = ctypes.c_bool
-                elif isinstance(val, tuple(INT_TYPES)):
-                    dtype = ctypes.c_int
-                elif isinstance(val, tuple(FLOAT_TYPES)):
-                    dtype = ctypes.c_double
-                elif isinstance(val, char):
-                    dtype = char
-                elif type(val) == str:
-                    dtype = str
                 try:
-                    stacktype = STACK_TYPES.index(dtype)
-                except AttributeError:
-                    stacktype = [ i for i, x in enumerate(STACK_TYPES) if x == dtype ][0]
+                    theList = [ '%s (PID %u)' % (x[1], x[0]) for x in available ]
+                    if 'MP' in globals():
+                        theQueue = MP.Queue()
+                        theProcess = MP.Process(target=_runInstSelect, args=(
+                         theList, theQueue))
+                        theProcess.start()
+                    else:
+                        theQueue = Queue.Queue()
+                        _runInstSelect(theList, theQueue)
+                    res = theQueue.get()
+                except:
+                    res = 0
 
-            if not isinstance(val, (str, Xepr.Xeprbuf)):
-                data = ctypes.string_at(ctypes.addressof(dtype(val)), size=ctypes.sizeof(dtype))
-                self._API.XeprPushValue(stacktype, data, len(data))
+                if res != None:
+                    pid = available[res][0]
+        if not pid:
+            raise IOError('%sCould not connect to any Xepr instance.' % _msgprefix)
+        else:
+            self._API.XeprSetInstPID(pid)
+        return
+
+    def _printmsg(self, msg, newline=True, prefix=_msgprefix):
+        if self.verbose:
+            if prefix:
+                print >> stderr, '%s%s%s' % (prefix, msg, '\n' if newline else ''),
             else:
-                val = val + '\x00' if dtype == str else val.getstr(raw=True)
-                self._API.XeprPushValue(stacktype, val, len(val))
+                print >> stderr, '%s%s' % (msg, '\n' if newline else ''),
+
+    def XeprActive(self):
+        """
+    :returns: *True* if the *Xepr API* is active.
+"""
+        return self._API.XeprAPIactive() >= SUCCESS
+
+    def XeprOpen(self):
+        """
+    Opens the Xepr API for Python. Can be used to re-open the API after having closed it using :meth:`XeprClose`. Usually, you
+    will not need to open the API manually, since it will be opened automatically upon instantiation of the :class:`~Xepr` class, i.e.
+    by creating an instance of :class:`XeprAPI.Xepr()`.
+
+    :raises: IOError exception in case opening the *Xepr API* did not succeed.
+"""
+        self._printmsg('Opening Xepr API...', newline=False)
+        if self._API.XeprAPIactive() < SUCCESS:
+            self._printmsg('failed.', prefix=None)
+            raise IOError('%sCould not open API' % _msgprefix)
+        namesP = ctypes.c_char_p()
+        argsP = ctypes.c_char_p()
+        retsP = ctypes.c_char_p()
+        numoffunctions = self._API.XeprGetFunctions(byref(namesP), byref(argsP), byref(retsP))
+        assert not numoffunctions < SUCCESS, '%sUnable to retrieve API function list' % _msgprefix
+        listoffunctions = ctypes.string_at(namesP).splitlines()
+        listofargs = NP.fromstring(ctypes.string_at(argsP, numoffunctions), NP.int8)
+        listofrets = NP.fromstring(ctypes.string_at(retsP, numoffunctions), NP.bool)
+        prodeldirP = ctypes.c_char_p()
+        self._API.XeprGetProDeLDir(byref(prodeldirP))
+        prodeldoc = self._getprodelprototypes(ctypes.string_at(prodeldirP), PRODELDOCSUBDIR)
+        self._prodeldoc = prodeldoc
+        for idx, func, args, rets in zip(range(len(listoffunctions)), listoffunctions, listofargs, listofrets):
+            if hasattr(self, func):
+                func = '_%s_' % func
+            self._dynamicmethods.append(func)
+            returnavalue = 'True' if rets else 'False'
+            if args >= 0:
+                if self._constantconstants and args == 0 and func.isupper() and rets:
+                    setattr(self, func, self._callXeprfunc(idx, True))
+                else:
+                    params = (', ').join([ 'p%u' % i for i in range(args) ])
+                    setattr(self, func, types.MethodType(eval('lambda self,%s: self._callXeprfunc(%u, %s, %s)' % (
+                     params, idx, returnavalue, params)), self, self.__class__))
+            else:
+                setattr(self, func, types.MethodType(eval('lambda self, *p: self._callXeprfunc(%u, %s, *(p+(len(p),)))' % (
+                 idx, returnavalue)), self, self.__class__))
+            if hasattr(getattr(self, func), '__func__'):
+                if func in prodeldoc:
+                    setattr(getattr(self, func).__func__, '__doc__', prodeldoc[func] + '\n\nSee ProDeL documentation in Xepr for more information.')
+                else:
+                    setattr(getattr(self, func).__func__, '__doc__', 'See ProDeL documentation in Xepr for information.')
+
+        self._printmsg('done.', prefix=None)
+        commandsP, argdescsP = ctypes.c_char_p(), ctypes.c_char_p()
+        numofcommands = self._API.XeprGetXeprCommands(byref(commandsP), byref(argdescsP))
+        assert not numofcommands < SUCCESS, '%sUnable to retrieve Xepr function list' % _msgprefix
+        listofcommands = ctypes.string_at(commandsP).splitlines()
+        listofcommandargs = ctypes.string_at(argdescsP).splitlines()
+        self.XeprCmds = self._cmds()
+        self.XeprCmds._execCmd = self.execCmd
+        for cmdname, arg in zip(listofcommands, listofcommandargs):
+            if cmdname[0].isalpha():
+                setattr(self.XeprCmds, cmdname, types.MethodType(eval("lambda self, *p: self._execCmd('%s', *p)" % cmdname), self.XeprCmds, self._cmds))
+
+        return
+
+    def getTitle(self, dset):
+        buf = self.Xeprbuf(1024)
+        self._getTitle_(dset, buf)
+        return buf.getstr()
+
+    def aqGetStrParValue(self, *p):
+        buf = self.Xeprbuf(1024)
+        self._aqGetStrParValue_(*(p + (buf, len(buf))))
+        return buf.getstr()
+
+    def aqGetSplFormula(self, *p):
+        buf = self.Xeprbuf(1024)
+        self._aqGetSplFormula_(*(p + (buf, len(buf))))
+        return buf.getstr()
+
+    def aqGetParUnits(self, *p):
+        buf = self.Xeprbuf(1024)
+        self._aqGetParUnits_(*(p + (buf, len(buf))))
+        return buf.getstr()
+
+    def aqGetParLabel(self, *p):
+        buf = self.Xeprbuf(1024)
+        self._aqGetParLabel_(*(p + (buf, len(buf))))
+        return buf.getstr()
+
+    def aqGetSplName(self, *p):
+        buf = self.Xeprbuf(1024)
+        self._aqGetSplName_(*(p + (buf, len(buf))))
+        return buf.getstr()
+
+    def aqGetComment(self, *p):
+        buf = self.Xeprbuf(1024)
+        self._aqGetComment_(*(p + (buf, len(buf))))
+        return buf.getstr()
+
+    def XeprDataset(self, *p, **k):
+        """
+    Create a :class:`~Dataset` object for accessing Xepr's datasets or creating new datasets (both 1D and 2D).
+
+    :param size: Size of dataset to be created. If *size* = *None*, no dataset is created, but it will be retrieved from the **Xepr** dataset
+                 specified by *xeprset* upon access to one of the attributes of the dataset object. If *size* is an integer number,
+                 a 1D dataset will be created, with *size* being the number of values on the abscissa. If *size* is a tuple of two integer
+                 numbers, i.e. (X,Y), a 2D dataset will be created, with X being the number of values on the first abscissa and Y
+                 the number of values on the second abscissa.
+    :type size:  integer value or tuple of integer values or None; default = None
+    :param shape: similar to *size* argument, but in reversed order for 2D datasets, where *shape* = (Y,X) will create a dataset with
+                  X being the number of values on the first abscissa and Y the number of values on the second abscissa. For 1D
+                  datasets, *size* and *shape* have the same meaning.
+    :type shape:  integer value or tuple of integer values or None; default = None
+
+    :param autorefresh: If *True*, the GUI of the **Xepr** application will be refreshed each time the :meth:`~Dataset.update`
+                        method is
+                        called. If *False*, the GUI is refreshed only by calling the :meth:`~XeprGUIrefresh` method or if the
+                        :meth:`~Dataset.update` method is called with the 'refresh' option.
+    :type autorefresh:  True or False; default = False
+    :param xeprset:     Select the dataset of the **Xepr** application to be used for writing a dataset to
+                        (by calling :meth:`~Dataset.update`) or for retrieving a dataset from.
+    :type xeprset:      string, default = "primary"
+    :param iscomplex:   If *True*, a dataset would be created with a complex ordinate. Only valid if *size* != *None*,
+                        i.e. if a dataset is to be created.
+    :type iscomplex:    True or False; default = False
+
+    Examples::
+
+        # ...suppose we already have the Xepr object...
+        >>> dset_pri = Xepr.XeprDataset()                          # retrieve Xepr's primary dataset
+        >>> dset_sec = Xepr.XeprDataset(xeprset = "secondary")     # retrieve Xepr's secondary dataset
+
+        >>> dset1D = Xepr.XeprDataset(size = 1024,                 # create 1D dataset with 1024 abscissa values
+                                      xeprset = "secondary")       # associated with Xepr's secondary dataset
+
+        >>> dset2D = Xepr.XeprDataset(size = (1024, 25))           # create 2D dataset with X * Y = 1024 * 25 values
+        # this produces the same type of dataset:
+        >>> dset2D = Xepr.XeprDataset(shape = (25, 1024))          # using shape argument: Y * X = 25 * 1024 values
+"""
+        return Dataset(self, *p, **k)
+
+    def XeprExperiment(self, *p, **k):
+        """
+    Creates Experiment object to create a new experiment or to access an experiment already set up by the operator of the **Xepr**
+    application.
+
+    :param name_or_vp:  If *name_or_vp* is an integer value, the :class:`~Experiment` object accesses the experiment corresponding
+                        to the **Xepr** viewport specified by *name_or_vp*; by default, the viewport number is *-1*, i.e. the
+                        current viewport. If *name_or_vp* is a string, it is used as the name of the experiment in **Xepr** to be
+                        created or accessed. If none of the remaining parameters is explicitly set, the :class:`~Experiment` object
+                        accesses the **Xepr** experiment by the name given for *name_or_vp*. If in addition to the string in
+                        *name_or_vp* any parameter is given, **Xepr** will try to build the experiment described by the parameters.
+    :type name_or_vp:   string or integer number; default = -1
+    :param exptype:     type of the experiment to be built, e.g. "C.W." or "Pulse".
+    :type exptype:      string or None; default = None
+    :param axs1:        Type of the first abscissa, e.g. "Field"; required for building a 1D or 2D experiment.
+    :type axs1:         string or None; default = None
+    :param axs2:        Type of the first abscissa, e.g. "Field"; required for building a 2D experiment.
+    :type axs2:         string or None; default = None
+    :param ordaxs:      Type of the ordinate, e.g. "Signal channel" or "Transient recorder"; required for building 1D or 2D experiments.
+    :type ordaxs:       string or None: default = None
+    :param addgrad:     If *True*, add gradient unit to the experiment to be built.
+    :param addgonio:    If *True*, add goniometer unit to the experiment to be built.
+    :param addvtu:      If *True*, add temperature controller to the experiment to be built.
+
+    Examples::
+
+        # ...suppose we already have the Xepr object...
+        >>> cur_exp = Xepr.XeprExperiment()     # access current experiment in Xepr
+
+        >>> cw_exp = Xepr.XeprExperiment("CWExp", exptype="C.W.", axs1="Field",   # create CW experiment
+                                         ordaxs="Signal channel", addgrad=True)   # and add a gradient unit
+
+        >>> pulse_exp = Xepr.XeprExperiment("PulseExp", exptype="Pulse",                # create a pulse
+                                           axs1="Field", ordaxs="Transient recorder")   # experiment
+"""
+        return Experiment(self, *p, **k)
+
+    def XeprClose(self):
+        """
+    Closes the API and tells **Xepr** to shut down its API support as well. After that, the API support of **Xepr**
+    has to be re-enabled manually by the **Xepr** operator (menu "*Processing*"  ->  sub-menu "*XeprAPI*"
+    ->  menu item "*Enable Xepr API*") to be able to establish the *Xepr API* again.
+
+    :raises: IOError exception in case shutting down the *Xepr API* did not succeed.
+"""
+        for func in self._dynamicmethods:
+            delattr(self, func)
+
+        self._dynamicmethods = []
+        self._printmsg('Closing API...', newline=False)
+        if self._API.XeprDisableAPI(1) == SUCCESS:
+            self._printmsg('done.', prefix=None)
+            self._APIopen = False
+        else:
+            self._printmsg('done.', prefix=None)
+            raise IOError('%sCould not close API' % _msgprefix)
+        return
+
+    def _popvalue(self):
+        dtype_ord = ctypes.c_int()
+        data = ctypes.create_string_buffer(255)
+        self._API.XeprPopValue(byref(dtype_ord), data)
+        dtype = STACK_TYPES[dtype_ord.value]
+        if hasattr(ctypes.c_int, 'from_buffer_copy'):
+            if dtype != pointer:
+                return dtype.from_buffer_copy(data).value
+            return dtype.from_buffer_copy(data)
+        else:
+            if dtype == pointer:
+                tmpint = ctypes.c_int32.from_address(ctypes.addressof(data))
+                val = pointer(tmpint.value)
+                return val
+            val = dtype.from_address(ctypes.addressof(data))
+            return val.value
+
+    def _pushvalue(self, val):
+        dtype = None
+        if isinstance(val, pointer):
+            dtype = pointer
+        else:
+            if isinstance(val, Xepr.Xeprbuf):
+                dtype = Xepr.Xeprbuf
+            elif isinstance(val, bool):
+                dtype = ctypes.c_bool
+            elif isinstance(val, tuple(INT_TYPES)):
+                dtype = ctypes.c_int
+            elif isinstance(val, tuple(FLOAT_TYPES)):
+                dtype = ctypes.c_double
+            elif isinstance(val, char):
+                dtype = char
+            elif type(val) == str:
+                dtype = str
+            try:
+                stacktype = STACK_TYPES.index(dtype)
+            except AttributeError:
+                stacktype = [ i for i, x in enumerate(STACK_TYPES) if x == dtype ][0]
+
+        if not isinstance(val, (str, Xepr.Xeprbuf)):
+            data = ctypes.string_at(ctypes.addressof(dtype(val)), size=ctypes.sizeof(dtype))
+            self._API.XeprPushValue(stacktype, data, len(data))
+        else:
+            val = val + '\x00' if dtype == str else val.getstr(raw=True)
+            self._API.XeprPushValue(stacktype, val, len(val))
+        return
+
+    def _callXeprfunc(self, funcidx, returnavalue, *p):
+        listofbuffers = []
+        for arg in p:
+            self._pushvalue(arg)
+            if isinstance(arg, Xepr.Xeprbuf):
+                listofbuffers.append(arg.buffer)
+
+        assert not self._API.XeprCallFunction(funcidx) != 0, '%sError processing function call' % _msgprefix
+        for buf in reversed(listofbuffers):
+            tmpbuf = ctypes.create_string_buffer(len(buf.tostring()))
+            self._API.XeprGetMutable(ctypes.addressof(tmpbuf), len(buf.tostring()))
+            buf[:] = NP.fromstring(tmpbuf, dtype=buf.dtype)
+
+        if returnavalue:
+            return self._popvalue()
+
+    def XeprGUIrefresh(self):
+        """
+    Refreshes the **Xepr** GUI.
+"""
+        self._API.XeprRefreshGUI()
+
+    def _getprodelprototypes(self, *path):
+        dir = os.path.join(*path)
+        if not os.path.isdir(dir):
+            return dict()
+        docdict = dict()
+        fnames = [ os.path.join(dir, f) for f in os.listdir(dir) if f.endswith('.doc') ]
+        pattern = re.compile('(\\w*\\s*(\\w+)[ \\t]*\\([\\w\\s,]*\\))')
+        for fname in fnames:
+            f = open(fname)
+            content = f.read()
+            f.close()
+            matches = re.findall(pattern, content)
+            for docstr, funcname in matches:
+                docdict[funcname] = docstr
+
+        return docdict
+
+    class Xeprbuf:
+
+        def __init__(self, preset='', length=None, dtype=NP.byte):
+            if isinstance(preset, int) and length == None:
+                length, preset = preset, ''
+            buflen = 1 + (length if length != None else len(preset))
+            self.buffer = NP.zeros(shape=buflen, dtype=dtype)
+            if dtype == NP.byte:
+                self.setstr(preset)
             return
 
-        def _callXeprfunc(self, funcidx, returnavalue, *p):
-            listofbuffers = []
-            for arg in p:
-                self._pushvalue(arg)
-                if isinstance(arg, Xepr.Xeprbuf):
-                    listofbuffers.append(arg.buffer)
+        def setstr(self, s):
+            self.buffer[:(len(s))] = NP.fromstring(s, dtype=NP.byte)
+            self.buffer[len(s)] = 0
 
-            assert not self._API.XeprCallFunction(funcidx) != 0, '%sError processing function call' % _msgprefix
-            for buf in reversed(listofbuffers):
-                tmpbuf = ctypes.create_string_buffer(len(buf.tostring()))
-                self._API.XeprGetMutable(ctypes.addressof(tmpbuf), len(buf.tostring()))
-                buf[:] = NP.fromstring(tmpbuf, dtype=buf.dtype)
+        def getstr(self, raw=False):
+            s = self.buffer.tostring()
+            if raw:
+                return s
+            return s[:s.index('\x00')]
 
-            if returnavalue:
-                return self._popvalue()
+        def __repr__(self):
+            return self.buffer.tostring()
 
-        def XeprGUIrefresh(self):
-            """
-        Refreshes the **Xepr** GUI.
-    """
-            self._API.XeprRefreshGUI()
+        def __len__(self):
+            return self.buffer.size - 1
 
-        def _getprodelprototypes(self, *path):
-            dir = os.path.join(*path)
-            if not os.path.isdir(dir):
-                return dict()
-            docdict = dict()
-            fnames = [ os.path.join(dir, f) for f in os.listdir(dir) if f.endswith('.doc') ]
-            pattern = re.compile('(\\w*\\s*(\\w+)[ \\t]*\\([\\w\\s,]*\\))')
-            for fname in fnames:
-                f = open(fname)
-                content = f.read()
-                f.close()
-                matches = re.findall(pattern, content)
-                for docstr, funcname in matches:
-                    docdict[funcname] = docstr
+        def __getitem__(self, idx):
+            return self.buffer.__getitem__(idx)
 
-            return docdict
+        def __setitem__(self, idx, val):
+            return self.buffer.__setitem__(idx, val)
 
-        class Xeprbuf:
+        def size(self):
+            return len(self.buffer.tostring())
 
-            def __init__(self, preset='', length=None, dtype=NP.byte):
-                if isinstance(preset, int) and length == None:
-                    length, preset = preset, ''
-                buflen = 1 + (length if length != None else len(preset))
-                self.buffer = NP.zeros(shape=buflen, dtype=dtype)
-                if dtype == NP.byte:
-                    self.setstr(preset)
-                return
-
-            def setstr(self, s):
-                self.buffer[:(len(s))] = NP.fromstring(s, dtype=NP.byte)
-                self.buffer[len(s)] = 0
-
-            def getstr(self, raw=False):
-                s = self.buffer.tostring()
-                if raw:
-                    return s
-                return s[:s.index('\x00')]
-
-            def __repr__(self):
-                return self.buffer.tostring()
-
-            def __len__(self):
-                return self.buffer.size - 1
-
-            def __getitem__(self, idx):
-                return self.buffer.__getitem__(idx)
-
-            def __setitem__(self, idx, val):
-                return self.buffer.__setitem__(idx, val)
-
-            def size(self):
-                return len(self.buffer.tostring())
-
-        class _cmds:
-            pass
+    class _cmds:
+        pass
 
 
-    STACK_TYPES = (NP.nan, pointer, ctypes.c_bool, ctypes.c_double, ctypes.c_float,
-     ctypes.c_long, ctypes.c_int, ctypes.c_short, char,
-     str, Xepr.Xeprbuf)
-    INT_TYPES = frozenset((int, NP.int, NP.int32, NP.int64))
-    try:
-        FLOAT_TYPES = frozenset((float, NP.float, NP.float32, NP.float64, NP.float128))
-    except AttributeError:
-        FLOAT_TYPES = frozenset((float, NP.float, NP.float32, NP.float64))
+STACK_TYPES = (NP.nan, pointer, ctypes.c_bool, ctypes.c_double, ctypes.c_float,
+ ctypes.c_long, ctypes.c_int, ctypes.c_short, char,
+ str, Xepr.Xeprbuf)
+INT_TYPES = frozenset((int, NP.int, NP.int32, NP.int64))
+try:
+    FLOAT_TYPES = frozenset((float, NP.float, NP.float32, NP.float64, NP.float128))
+except AttributeError:
+    FLOAT_TYPES = frozenset((float, NP.float, NP.float32, NP.float64))
+
 
 class DatasetError(Exception):
     """

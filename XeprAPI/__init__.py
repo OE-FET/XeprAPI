@@ -9,7 +9,7 @@ import os
 import sys
 
 _msgprefix = "Xepr API: "
-__version__ = "0.60"
+__version__ = "0.61-dev"
 __author__ = "Sam Schott, Bruker Biospin"
 
 def _getpath(major, minor):

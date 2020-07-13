@@ -32,19 +32,20 @@ setup(
     packages=find_packages(),
     package_data={
             "XeprAPI": [
-                    "**/*.so",
-                    "**/*.py",
+                    "*.so",
+                    "*.py",
             ],
     },
     install_requires=[
                 "numpy>=1.2.1",
     ],
+    python_requires='>=3.6',
     zip_safe=False,
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Operating System :: Unix',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],

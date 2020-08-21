@@ -11,6 +11,5 @@ from .main import (
 )
 
 
-_msgprefix = "Xepr API: "
 __version__ = "0.61"
 __author__ = "Bruker Biospin"

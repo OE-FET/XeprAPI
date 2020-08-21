@@ -49,24 +49,25 @@ class char(ctypes.c_char):
 
 
 def _loadapilib(libxeprapi_path=None):
+
     if ctypes.sizeof(ctypes.c_void_p) * 8 == 32:
         libname = 'libxeprapi_32.so'
     else:
         libname = 'libxeprapi.so'
 
     if not libxeprapi_path:
-        try:
-            libxeprapi_path = os.path.dirname(os.path.realpath(__file__))
-        except NameError:
-            libxeprapi_path = '.'
+        libxeprapi_path = os.path.dirname(os.path.realpath(__file__))
 
     libxeprapi = os.path.join(libxeprapi_path, libname)
     newlibname = tempfile.mkstemp(suffix='.so', prefix='lib')
+
     with open(libxeprapi, 'rb') as f:
         os.write(newlibname[0], f.read())
+
     os.close(newlibname[0])
     libAPI = ctypes.cdll.LoadLibrary(newlibname[1])
     os.unlink(newlibname[1])
+
     return libAPI
 
 

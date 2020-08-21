@@ -1,5 +1,5 @@
 """
-*Xepr API* module for Python 3.7, providing access to **Xepr** via *libxeprapi.so*
+*Xepr API* module for Python, providing access to **Xepr** via *libxeprapi.so*
 """
 
 import types

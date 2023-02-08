@@ -279,7 +279,7 @@ class Xepr(object):
             raise IOError('%sUnable to retrieve API function list' % _msgprefix)
         self._listoffunctions = ctypes.string_at(namesP).decode(_encoding).splitlines()
         self._listofargs = np.frombuffer(ctypes.string_at(argsP, numoffunctions), np.int8)
-        self._listofrets = np.frombuffer(ctypes.string_at(retsP, numoffunctions), np.bool)
+        self._listofrets = np.frombuffer(ctypes.string_at(retsP, numoffunctions), bool)
         prodeldirP = ctypes.c_char_p()
         self._API.XeprGetProDeLDir(byref(prodeldirP))
         prodeldoc = self._getprodelprototypes(ctypes.string_at(prodeldirP).decode(_encoding), PRODELDOCSUBDIR)
@@ -595,11 +595,11 @@ STACK_TYPES = (
     ctypes.c_long, ctypes.c_int, ctypes.c_short, char,
     str, Xepr.Xeprbuf,
 )
-INT_TYPES = frozenset((int, np.int, np.int32, np.int64))
+INT_TYPES = frozenset((int, np.int_, np.int32, np.int64))
 try:
-    FLOAT_TYPES = frozenset((float, np.float, np.float32, np.float64, np.float128))
+    FLOAT_TYPES = frozenset((float, np.double, np.float32, np.float64, np.float128))
 except AttributeError:
-    FLOAT_TYPES = frozenset((float, np.float, np.float32, np.float64))
+    FLOAT_TYPES = frozenset((float, np.double, np.float32, np.float64))
 
 
 class DatasetError(Exception):
